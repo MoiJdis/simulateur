@@ -28,7 +28,7 @@
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <!-- LOGO SECRET : Cliquer dessus active/désactive la visibilité de la marge entreprise et du MRR -->
+                <!-- LOGO SECRET : Cliquer dessus active/désactive la visibilité de la marge plateforme et du MRR -->
                 <div onclick="togglePresentationMode()" title="Simulateur" class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md shadow-indigo-100 cursor-pointer select-none hover:bg-indigo-700 active:scale-95 transition-all">
                     <i id="logoIcon" class="fa-solid fa-arrows-spin text-lg transition-transform duration-500"></i>
                 </div>
@@ -53,6 +53,36 @@
         <!-- Panneau de configuration (Sidebar à gauche) -->
         <section class="lg:col-span-4 space-y-6">
             
+            <!-- BLOC OMNIVIZI : Règles du Quota d'Activation -->
+            <div class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-2xl p-5 shadow-lg space-y-3 border border-indigo-950">
+                <div class="flex items-center space-x-2">
+                    <div class="bg-indigo-500 text-white p-1.5 rounded-lg text-xs">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </div>
+                    <h2 class="text-xs font-extrabold uppercase tracking-widest text-indigo-300">Règles Quota OmniViZi</h2>
+                </div>
+                <p class="text-[11px] text-slate-300 leading-relaxed">
+                    Le taux de commission du portefeuille commercial s'ajuste dynamiquement selon les ventes hebdomadaires moyennes réalisées durant le mois :
+                </p>
+                <div class="space-y-2 text-[11px] pt-1">
+                    <div class="flex items-center justify-between p-2 rounded-lg bg-slate-800/40 border border-slate-700/30">
+                        <span class="font-medium text-red-400"><i class="fa-solid fa-triangle-exclamation mr-1.5"></i> &lt; 8 ventes (Avertissement)</span>
+                        <span class="font-bold bg-red-950/50 text-red-300 px-2 py-0.5 rounded border border-red-900/30">20% Comm.</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2 rounded-lg bg-slate-800/40 border border-slate-700/30">
+                        <span class="font-medium text-amber-400"><i class="fa-solid fa-clock-rotate-left mr-1.5"></i> 8 à 15 ventes (Maintien)</span>
+                        <span class="font-bold bg-amber-950/50 text-amber-300 px-2 py-0.5 rounded border border-amber-900/30">30% Comm.</span>
+                    </div>
+                    <div class="flex items-center justify-between p-2 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
+                        <span class="font-semibold text-emerald-400"><i class="fa-solid fa-trophy mr-1.5"></i> 16+ ventes (Excellence)</span>
+                        <span class="font-bold bg-emerald-950/50 text-emerald-300 px-2 py-0.5 rounded border border-emerald-900/30">35% Comm.</span>
+                    </div>
+                </div>
+                <div class="text-[9px] text-slate-400 text-center italic pt-1">
+                    Cible visée : 4 ventes par semaine (soit 16 par mois) par commercial.
+                </div>
+            </div>
+            
             <!-- Bloc 1 : Hypothèses financières de base -->
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
                 <h2 class="text-sm font-bold text-slate-900 flex items-center uppercase tracking-wider">
@@ -60,31 +90,57 @@
                 </h2>
                 <hr class="border-slate-100">
                 
-                <!-- Prix de vente récurrent -->
-                <div>
-                    <label for="inputUnitPrice" class="block text-xs font-semibold text-slate-600 mb-1.5">Abonnement Mensuel unitaire (remise déduite)</label>
-                    <div class="relative rounded-lg shadow-sm">
-                        <input type="number" id="inputUnitPrice" value="89" min="1" step="0.5" oninput="handleParamChange()" class="w-full pl-3 pr-16 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
-                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <span class="text-xs font-bold text-slate-400">€ HT / mois</span>
+                <!-- Double Tarification (Mensuelle vs Annuelle) -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label for="inputMonthlyPrice" class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Sans engagement</label>
+                        <div class="relative rounded-lg shadow-sm">
+                            <input type="number" id="inputMonthlyPrice" value="99" min="1" step="0.5" oninput="handleParamChange()" class="w-full pl-3 pr-8 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                            <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+                                <span class="text-[10px] font-bold text-slate-400">€/m</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="inputAnnualPrice" class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Engagement 12m</label>
+                        <div class="relative rounded-lg shadow-sm">
+                            <input type="number" id="inputAnnualPrice" value="990" min="1" step="0.5" oninput="handleParamChange()" class="w-full pl-3 pr-8 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                            <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
+                                <span class="text-[10px] font-bold text-slate-400">€/an</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Taux de désabonnement (Churn) -->
-                <div class="bg-red-50/50 p-3 rounded-xl border border-red-100">
-                    <div class="flex justify-between text-xs font-semibold mb-1">
-                        <span class="text-red-700 flex items-center"><i class="fa-solid fa-user-minus mr-1.5"></i> Taux d'Attrition (Churn mensuel)</span>
-                        <span id="labelChurn" class="font-bold text-red-800">5.0%</span>
+                <!-- Mix de facturation (Curseur) -->
+                <div class="bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 space-y-2">
+                    <div class="flex justify-between text-xs font-semibold">
+                        <span class="text-indigo-800 flex items-center"><i class="fa-solid fa-file-contract mr-1.5"></i> Mix d'Abonnement Annuel</span>
+                        <span id="labelAnnualMix" class="font-bold text-indigo-900">20%</span>
                     </div>
-                    <input type="range" id="rangeChurn" min="0" max="15" step="0.5" value="5" oninput="handleChurnChange()" class="w-full h-1.5 bg-red-100 rounded-lg appearance-none cursor-pointer">
+                    <input type="range" id="rangeAnnualMix" min="0" max="100" step="5" value="20" oninput="handleAnnualMixChange()" class="w-full h-1.5 bg-indigo-100 rounded-lg appearance-none cursor-pointer">
+                    <div class="flex justify-between items-center text-[10px] text-slate-500 pt-1 font-medium">
+                        <span>Panier Moyen MRR :</span>
+                        <span id="labelWeightedPrice" class="font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-indigo-100">95.70 € HT / mois</span>
+                    </div>
                 </div>
 
-                <!-- Répartition des pourcentages -->
+                <!-- Taux de désabonnement (Churn) -->
+                <div>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1.5">Taux d'Attrition (Churn mensuel)</label>
+                    <div class="bg-red-50/50 p-3 rounded-xl border border-red-100">
+                        <div class="flex justify-between text-xs font-semibold mb-1">
+                            <span class="text-red-700 flex items-center"><i class="fa-solid fa-user-minus mr-1.5"></i> Churn mensuel moyen</span>
+                            <span id="labelChurn" class="font-bold text-red-800">5.0%</span>
+                        </div>
+                        <input type="range" id="rangeChurn" min="0" max="15" step="0.5" value="5" oninput="handleChurnChange()" class="w-full h-1.5 bg-red-100 rounded-lg appearance-none cursor-pointer">
+                    </div>
+                </div>
+
+                <!-- Répartition fixe Agence & Challenge -->
                 <div class="space-y-4 pt-2">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-bold text-slate-700">Répartition du CA (%)</span>
-                        <span id="badgeTotalInvested" class="text-xs px-2 py-0.5 rounded-full font-bold bg-indigo-50 text-indigo-700">Commissions : 50%</span>
+                        <span class="text-xs font-bold text-slate-700">Répartition fixes (%)</span>
                     </div>
 
                     <!-- Part Agence -->
@@ -93,16 +149,7 @@
                             <span>Part Agence (Récurrente)</span>
                             <span id="labelAgency" class="font-bold text-slate-900">10%</span>
                         </div>
-                        <input type="range" id="rangeAgency" min="0" max="100" value="10" oninput="handleRangeChange('Agency')" class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer">
-                    </div>
-
-                    <!-- Part Commercial -->
-                    <div>
-                        <div class="flex justify-between text-xs text-slate-500 mb-1">
-                            <span>Part Commercial (Récurrente)</span>
-                            <span id="labelRep" class="font-bold text-slate-900">35%</span>
-                        </div>
-                        <input type="range" id="rangeRep" min="0" max="100" value="35" oninput="handleRangeChange('Rep')" class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer">
+                        <input type="range" id="rangeAgency" min="0" max="50" value="10" oninput="handleRangeChange('Agency')" class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer">
                     </div>
 
                     <!-- Budget Challenge / Cadeaux -->
@@ -111,7 +158,7 @@
                             <span>Budget Challenge (Récurrent)</span>
                             <span id="labelChallenge" class="font-bold text-slate-900">5%</span>
                         </div>
-                        <input type="range" id="rangeChallenge" min="0" max="100" value="5" oninput="handleRangeChange('Challenge')" class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer">
+                        <input type="range" id="rangeChallenge" min="0" max="25" value="5" oninput="handleRangeChange('Challenge')" class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer">
                     </div>
                 </div>
 
@@ -129,10 +176,13 @@
                     </div>
                     <div class="grid grid-cols-4 gap-1 text-[9px] text-center mt-2 text-slate-500 font-medium">
                         <div><span class="inline-block w-2 h-2 rounded-full bg-red-500 mr-1"></span>Agence</div>
-                        <div><span class="inline-block w-2 h-2 rounded-full bg-violet-400 mr-1"></span>Comm.</div>
+                        <div><span class="inline-block w-2 h-2 rounded-full bg-violet-400 mr-1"></span>Comm. (Max)</div>
                         <div><span class="inline-block w-2 h-2 rounded-full bg-amber-400 mr-1"></span>Chal.</div>
                         <div><span class="inline-block w-2 h-2 rounded-full bg-emerald-50 mr-1"></span>Plateforme</div>
                     </div>
+                    <p class="text-[9px] text-slate-400 mt-2 leading-relaxed">
+                        *Le taux commercial (violet) s'adapte dynamiquement selon les quotas d'acquisition mensuels par commercial.
+                    </p>
                 </div>
             </div>
 
@@ -147,9 +197,9 @@
                 <div>
                     <label for="inputRepsCount" class="block text-xs font-semibold text-slate-600 mb-1.5">Nombre de Commerciaux actifs</label>
                     <div class="relative rounded-lg shadow-sm">
-                        <input type="number" id="inputRepsCount" value="1" min="1" step="1" oninput="handleParamChange()" class="w-full pl-3 pr-20 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                        <input type="number" id="inputRepsCount" value="4" min="1" step="1" oninput="handleParamChange()" class="w-full pl-3 pr-20 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <span class="text-xs font-bold text-slate-400">commercial(es)</span>
+                            <span class="text-xs font-bold text-slate-400">commerciaux</span>
                         </div>
                     </div>
                 </div>
@@ -198,7 +248,7 @@
                     <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center">
                         <i class="fa-solid fa-calendar-days text-indigo-500 mr-2"></i> Projections et Bilans Exercices Annuels
                     </h2>
-                    <p class="text-[11px] text-slate-500">Suivi des performances récurrentes par année de collaboration.</p>
+                    <p class="text-[11px] text-slate-500">Suivi des performances récurrentes par année de collaboration (basé sur l'atteinte des quotas d'acquisition).</p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -217,7 +267,7 @@
                                 </div>
                             </div>
                             <div class="border-t border-dashed border-slate-200 pt-2">
-                                <span class="text-[9px] uppercase font-bold text-violet-600 block">Part Commerciaux (35% Équipe)</span>
+                                <span class="text-[9px] uppercase font-bold text-violet-600 block">Part Commerciaux (Équipe)</span>
                                 <div class="flex justify-between items-baseline mt-0.5">
                                     <span id="y1RepTotal" class="text-sm font-bold text-slate-900">0 €</span>
                                     <span id="y1RepAvg" class="text-[11px] text-slate-500 font-medium">Moy. 0 €/m</span>
@@ -242,7 +292,7 @@
                                 </div>
                             </div>
                             <div class="border-t border-dashed border-slate-200 pt-2">
-                                <span class="text-[9px] uppercase font-bold text-violet-600 block">Part Commerciaux (35% Équipe)</span>
+                                <span class="text-[9px] uppercase font-bold text-violet-600 block">Part Commerciaux (Équipe)</span>
                                 <div class="flex justify-between items-baseline mt-0.5">
                                     <span id="y2RepTotal" class="text-sm font-bold text-slate-900">0 €</span>
                                     <span id="y2RepAvg" class="text-[11px] text-slate-500 font-medium">Moy. 0 €/m</span>
@@ -267,7 +317,7 @@
                                 </div>
                             </div>
                             <div class="border-t border-dashed border-slate-200 pt-2">
-                                <span class="text-[9px] uppercase font-bold text-violet-600 block">Part Commerciaux (35% Équipe)</span>
+                                <span class="text-[9px] uppercase font-bold text-violet-600 block">Part Commerciaux (Équipe)</span>
                                 <div class="flex justify-between items-baseline mt-0.5">
                                     <span id="y3RepTotal" class="text-sm font-bold text-slate-900">0 €</span>
                                     <span id="y3RepAvg" class="text-[11px] text-slate-500 font-medium">Moy. 0 €/m</span>
@@ -279,33 +329,12 @@
                 </div>
             </div>
 
-            <!-- Graphique d'évolution MRR vs Cumul -->
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <div>
-                        <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Évolution Visuelle des Revenus</h2>
-                        <p class="text-xs text-slate-500">Suivi dynamique de la montée en puissance de l'activité</p>
-                    </div>
-                    <div class="flex items-center bg-slate-100 p-1 rounded-xl self-start">
-                        <button onclick="toggleChartType('cumulative')" id="btnChartCumulative" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-sm">
-                            Cumulé
-                        </button>
-                        <button onclick="toggleChartType('monthly')" id="btnChartMonthly" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600">
-                            Mensuel (MRR)
-                        </button>
-                    </div>
-                </div>
-                <div class="relative w-full h-80 sm:h-96">
-                    <canvas id="mainChart"></canvas>
-                </div>
-            </div>
-
             <!-- Registre de ventes interactif -->
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
                         <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Registre de Vente & Portefeuille Clients (36 Mois)</h2>
-                        <p class="text-xs text-slate-500">Ajustez directement les <strong>Nouveaux (par commercial)</strong> dans le tableau ci-dessous.</p>
+                        <p class="text-xs text-slate-500">Ajustez directement les <strong>Nouveaux (par commercial)</strong> dans le tableau ci-dessous pour voir le quota et la commission s'ajuster automatiquement.</p>
                     </div>
                     <div class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full flex items-center self-start sm:self-center">
                         <i class="fa-solid fa-circle text-[8px] mr-1.5 animate-pulse"></i> Modèle récurrent (Attrition 5% incluse)
@@ -318,12 +347,13 @@
                             <tr>
                                 <th scope="col" class="px-3 py-3 font-semibold text-center w-12">Mois</th>
                                 <th scope="col" class="px-3 py-3 font-semibold w-24 bg-slate-100/80">Nouveaux (par commercial)</th>
+                                <th scope="col" class="px-3 py-3 font-semibold text-center">Quota</th>
                                 <th scope="col" class="px-3 py-3 font-semibold w-24 text-center">Actifs (Équipe)</th>
                                 <th scope="col" class="px-3 py-3 font-semibold">CA Mensuel (MRR)</th>
                                 <th id="thAgency" scope="col" class="px-3 py-3 font-semibold text-red-700">Agence (10%)</th>
-                                <th id="thRep" scope="col" class="px-3 py-3 font-semibold text-violet-700">Comm. (35%)</th>
+                                <th id="thRep" scope="col" class="px-3 py-3 font-semibold text-violet-700">Comm. (Dynamique)</th>
                                 <th id="thChallenge" scope="col" class="px-3 py-3 font-semibold text-amber-700">Chal. (5%)</th>
-                                <th id="thRemaining" scope="col" class="px-3 py-3 font-semibold text-emerald-700 bg-emerald-50/50">Plateforme, R&D & Support (50%)</th>
+                                <th id="thRemaining" scope="col" class="px-3 py-3 font-semibold text-emerald-700 bg-emerald-50/50">Plateforme, R&D & Support</th>
                             </tr>
                         </thead>
                         <tbody id="tableBody" class="divide-y divide-slate-100 bg-white">
@@ -337,22 +367,23 @@
     </main>
 
     <footer class="bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-400 font-medium">
-        <p>© 2026 - Simulateur Plan de Commissionnement Récurrent (SaaS & Retainer). Conçu avec précision.</p>
+        <p>© 2026 - Simulateur Plan de Commissionnement Récurrent (SaaS & Retainer) avec Quotas d'Activation. Conçu avec précision.</p>
     </footer>
 
     <script>
         const state = {
-            unitPrice: 89,
+            monthlyPrice: 99,    // Prix de base mensuel sans engagement
+            annualPrice: 990,    // Prix de base annuel avec engagement
+            pctAnnualMix: 20,    // Taux de conversion à l'offre annuelle par défaut
             pctAgency: 10,       // Agence 10% par défaut
-            pctRep: 35,          // Commercial 35% par défaut
             pctChallenge: 5,     // Challenge 5% par défaut
             churnRate: 5.0,
-            repsCount: 1,
+            repsCount: 8,        // 8 commerciaux par défaut
             presentationMode: true, // ACTIVE PAR DÉFAUT : la marge et le MRR sont invisibles à l'ouverture
             rotationDegree: 0,
             
             growthType: 'constant',
-            startSales: 16,
+            startSales: 16,      // 16 nouveaux clients par mois
             growthFactor: 5,
             
             monthlyNewSales: Array(36).fill(0),
@@ -376,22 +407,24 @@
             const y2MRR = document.getElementById('y2MRR');
             const y3MRR = document.getElementById('y3MRR');
 
-            if (state.presentationMode) {
-                // Masquer la marge plateforme
-                companyMarginBlock.classList.add('opacity-0', 'h-0', 'overflow-hidden', 'mt-0', 'p-0', 'border-0');
-                thRemaining.classList.add('hidden');
-                // Masquer les MRR des projections annuelles
-                y1MRR.classList.add('hidden');
-                y2MRR.classList.add('hidden');
-                y3MRR.classList.add('hidden');
-            } else {
-                // Tout afficher
-                companyMarginBlock.classList.remove('opacity-0', 'h-0', 'overflow-hidden', 'mt-0', 'p-0', 'border-0');
-                thRemaining.classList.remove('hidden');
-                // Afficher les MRR des projections annuelles
-                y1MRR.classList.remove('hidden');
-                y2MRR.classList.remove('hidden');
-                y3MRR.classList.remove('hidden');
+            if (companyMarginBlock && thRemaining && y1MRR && y2MRR && y3MRR) {
+                if (state.presentationMode) {
+                    // Masquer la marge plateforme
+                    companyMarginBlock.classList.add('opacity-0', 'h-0', 'overflow-hidden', 'mt-0', 'p-0', 'border-0');
+                    thRemaining.classList.add('hidden');
+                    // Masquer les MRR des projections annuelles
+                    y1MRR.classList.add('hidden');
+                    y2MRR.classList.add('hidden');
+                    y3MRR.classList.add('hidden');
+                } else {
+                    // Tout afficher
+                    companyMarginBlock.classList.remove('opacity-0', 'h-0', 'overflow-hidden', 'mt-0', 'p-0', 'border-0');
+                    thRemaining.classList.remove('hidden');
+                    // Afficher les MRR des projections annuelles
+                    y1MRR.classList.remove('hidden');
+                    y2MRR.classList.remove('hidden');
+                    y3MRR.classList.remove('hidden');
+                }
             }
         }
 
@@ -401,35 +434,61 @@
             
             // Animation de rotation esthétique sur l'icône du logo
             state.rotationDegree += 180;
-            document.getElementById('logoIcon').style.transform = `rotate(${state.rotationDegree}deg)`;
+            const logoIcon = document.getElementById('logoIcon');
+            if (logoIcon) {
+                logoIcon.style.transform = `rotate(${state.rotationDegree}deg)`;
+            }
             
             applyPresentationMode();
             calculateAndRender();
         }
 
         function resetToDefaults() {
-            state.unitPrice = 89;
+            state.monthlyPrice = 99;
+            state.annualPrice = 990;
+            state.pctAnnualMix = 20;
             state.pctAgency = 10;
-            state.pctRep = 35;
             state.pctChallenge = 5;
             state.churnRate = 5.0;
-            state.repsCount = 1;
+            state.repsCount = 8;
             state.growthType = 'constant';
             state.startSales = 16;
             state.growthFactor = 5;
             state.presentationMode = true; // Repasse en mode masqué par défaut à la réinitialisation
             state.rotationDegree = 0;
             
-            document.getElementById('logoIcon').style.transform = 'rotate(0deg)';
-            document.getElementById('inputUnitPrice').value = state.unitPrice;
-            document.getElementById('rangeChurn').value = state.churnRate;
-            document.getElementById('labelChurn').innerText = "5.0%";
-            document.getElementById('rangeAgency').value = state.pctAgency;
-            document.getElementById('rangeRep').value = state.pctRep;
-            document.getElementById('rangeChallenge').value = state.pctChallenge;
-            document.getElementById('inputStartSales').value = state.startSales;
-            document.getElementById('inputGrowthFactor').value = state.growthFactor;
-            document.getElementById('inputRepsCount').value = state.repsCount;
+            const logoIcon = document.getElementById('logoIcon');
+            if (logoIcon) logoIcon.style.transform = 'rotate(0deg)';
+            
+            const inputMonthlyPrice = document.getElementById('inputMonthlyPrice');
+            if (inputMonthlyPrice) inputMonthlyPrice.value = state.monthlyPrice;
+
+            const inputAnnualPrice = document.getElementById('inputAnnualPrice');
+            if (inputAnnualPrice) inputAnnualPrice.value = state.annualPrice;
+
+            const rangeAnnualMix = document.getElementById('rangeAnnualMix');
+            if (rangeAnnualMix) rangeAnnualMix.value = state.pctAnnualMix;
+            
+            const rangeChurn = document.getElementById('rangeChurn');
+            if (rangeChurn) rangeChurn.value = state.churnRate;
+            
+            const labelChurn = document.getElementById('labelChurn');
+            if (labelChurn) labelChurn.innerText = "5.0%";
+            
+            const rangeAgency = document.getElementById('rangeAgency');
+            if (rangeAgency) rangeAgency.value = state.pctAgency;
+            
+            const rangeChallenge = document.getElementById('rangeChallenge');
+            if (rangeChallenge) rangeChallenge.value = state.pctChallenge;
+            
+            const inputStartSales = document.getElementById('inputStartSales');
+            if (inputStartSales) inputStartSales.value = state.startSales;
+            
+            const inputGrowthFactor = document.getElementById('inputGrowthFactor');
+            if (inputGrowthFactor) inputGrowthFactor.value = state.growthFactor;
+            
+            const inputRepsCount = document.getElementById('inputRepsCount');
+            if (inputRepsCount) inputRepsCount.value = state.repsCount;
             
             applyPresentationMode();
             updateSlidersUI();
@@ -437,53 +496,83 @@
         }
 
         function handleChurnChange() {
-            state.churnRate = parseFloat(document.getElementById('rangeChurn').value);
-            document.getElementById('labelChurn').innerText = state.churnRate.toFixed(1) + "%";
+            const rangeChurn = document.getElementById('rangeChurn');
+            if (rangeChurn) {
+                state.churnRate = parseFloat(rangeChurn.value);
+            }
+            const labelChurn = document.getElementById('labelChurn');
+            if (labelChurn) {
+                labelChurn.innerText = state.churnRate.toFixed(1) + "%";
+            }
+            calculateAndRender();
+        }
+
+        // Gère la modification du mix de facturation annuel
+        function handleAnnualMixChange() {
+            const rangeAnnualMix = document.getElementById('rangeAnnualMix');
+            if (rangeAnnualMix) {
+                state.pctAnnualMix = parseInt(rangeAnnualMix.value, 10);
+            }
             calculateAndRender();
         }
 
         function handleRangeChange(source) {
-            const valAgency = parseFloat(document.getElementById('rangeAgency').value);
-            const valRep = parseFloat(document.getElementById('rangeRep').value);
-            const valChallenge = parseFloat(document.getElementById('rangeChallenge').value);
+            const rangeAgency = document.getElementById('rangeAgency');
+            const rangeChallenge = document.getElementById('rangeChallenge');
+            if (!rangeAgency || !rangeChallenge) return;
+
+            const valAgency = parseFloat(rangeAgency.value);
+            const valChallenge = parseFloat(rangeChallenge.value);
             
-            const total = valAgency + valRep + valChallenge;
+            const total = valAgency + valChallenge;
             
-            if (total > 100) {
-                const overValue = total - 100;
-                if (source === 'Agency') document.getElementById('rangeAgency').value = valAgency - overValue;
-                else if (source === 'Rep') document.getElementById('rangeRep').value = valRep - overValue;
-                else if (source === 'Challenge') document.getElementById('rangeChallenge').value = valChallenge - overValue;
+            if (total > 65) { // Empêcher l'agence et le challenge de dépasser 65% pour sécuriser un minimum de marge
+                const overValue = total - 65;
+                if (source === 'Agency') rangeAgency.value = valAgency - overValue;
+                else if (source === 'Challenge') rangeChallenge.value = valChallenge - overValue;
             }
 
-            state.pctAgency = parseFloat(document.getElementById('rangeAgency').value);
-            state.pctRep = parseFloat(document.getElementById('rangeRep').value);
-            state.pctChallenge = parseFloat(document.getElementById('rangeChallenge').value);
+            state.pctAgency = parseFloat(rangeAgency.value);
+            state.pctChallenge = parseFloat(rangeChallenge.value);
 
             updateSlidersUI();
             calculateAndRender();
         }
 
         function updateSlidersUI() {
-            document.getElementById('labelAgency').innerText = state.pctAgency + '%';
-            document.getElementById('labelRep').innerText = state.pctRep + '%';
-            document.getElementById('labelChallenge').innerText = state.pctChallenge + '%';
+            const labelAgency = document.getElementById('labelAgency');
+            if (labelAgency) labelAgency.innerText = state.pctAgency + '%';
 
-            const totalInvested = state.pctAgency + state.pctRep + state.pctChallenge;
+            const labelChallenge = document.getElementById('labelChallenge');
+            if (labelChallenge) labelChallenge.innerText = state.pctChallenge + '%';
+
+            // Pour l'interface d'enveloppe à gauche, on affiche la structure avec le taux de commission d'excellence (35%)
+            const totalInvested = state.pctAgency + 35 + state.pctChallenge; 
             const remaining = Math.max(0, 100 - totalInvested);
 
-            document.getElementById('badgeTotalInvested').innerText = 'Commissions : ' + totalInvested + '%';
-            document.getElementById('pctRemaining').innerText = remaining + '%';
+            const badgeTotalInvested = document.getElementById('badgeTotalInvested');
+            if (badgeTotalInvested) badgeTotalInvested.innerText = 'Commissions Max : ' + totalInvested + '%';
 
-            document.getElementById('barAgency').style.width = state.pctAgency + '%';
-            document.getElementById('barRep').style.width = state.pctRep + '%';
-            document.getElementById('barChallenge').style.width = state.pctChallenge + '%';
-            document.getElementById('barRemaining').style.width = remaining + '%';
+            const pctRemaining = document.getElementById('pctRemaining');
+            if (pctRemaining) pctRemaining.innerText = remaining + '%';
 
-            document.getElementById('thAgency').innerText = `Agence (${state.pctAgency}%)`;
-            document.getElementById('thRep').innerText = `Comm. (${state.pctRep}%)`;
-            document.getElementById('thChallenge').innerText = `Chal. (${state.pctChallenge}%)`;
-            document.getElementById('thRemaining').innerText = `Plateforme, R&D & Support (${remaining}%)`;
+            const barAgency = document.getElementById('barAgency');
+            if (barAgency) barAgency.style.width = state.pctAgency + '%';
+
+            const barRep = document.getElementById('barRep');
+            if (barRep) barRep.style.width = '35%';
+
+            const barChallenge = document.getElementById('barChallenge');
+            if (barChallenge) barChallenge.style.width = state.pctChallenge + '%';
+
+            const barRemaining = document.getElementById('barRemaining');
+            if (barRemaining) barRemaining.style.width = remaining + '%';
+
+            const thAgency = document.getElementById('thAgency');
+            if (thAgency) thAgency.innerText = `Agence (${state.pctAgency}%)`;
+
+            const thChallenge = document.getElementById('thChallenge');
+            if (thChallenge) thChallenge.innerText = `Chal. (${state.pctChallenge}%)`;
         }
 
         function setGrowthType(type) {
@@ -497,30 +586,38 @@
             const unitGrowth = document.getElementById('unitGrowthFactor');
 
             [btnConstant, btnLinear, btnExponential].forEach(btn => {
-                btn.className = "py-2 px-1 text-center rounded-lg border text-xs font-semibold transition-all border-slate-200 bg-white text-slate-700 hover:bg-slate-50";
+                if (btn) {
+                    btn.className = "py-2 px-1 text-center rounded-lg border text-xs font-semibold transition-all border-slate-200 bg-white text-slate-700 hover:bg-slate-50";
+                }
             });
 
             if (type === 'constant') {
-                btnConstant.className = "py-2 px-1 text-center rounded-lg border text-xs font-bold transition-all border-indigo-200 bg-indigo-50 text-indigo-700";
-                containerFactor.classList.add('hidden');
+                if (btnConstant) btnConstant.className = "py-2 px-1 text-center rounded-lg border text-xs font-bold transition-all border-indigo-200 bg-indigo-50 text-indigo-700";
+                if (containerFactor) containerFactor.classList.add('hidden');
             } else if (type === 'linear') {
-                btnLinear.className = "py-2 px-1 text-center rounded-lg border text-xs font-bold transition-all border-indigo-200 bg-indigo-50 text-indigo-700";
-                containerFactor.classList.remove('hidden');
-                labelGrowth.innerText = "Ajout de clients/mois";
-                unitGrowth.innerText = "clients/m";
+                if (btnLinear) btnLinear.className = "py-2 px-1 text-center rounded-lg border text-xs font-bold transition-all border-indigo-200 bg-indigo-50 text-indigo-700";
+                if (containerFactor) containerFactor.classList.remove('hidden');
+                if (labelGrowth) labelGrowth.innerText = "Ajout de clients/mois";
+                if (unitGrowth) unitGrowth.innerText = "clients/m";
             } else if (type === 'exponential') {
-                btnExponential.className = "py-2 px-1 text-center rounded-lg border text-xs font-bold transition-all border-indigo-200 bg-indigo-50 text-indigo-700";
-                containerFactor.classList.remove('hidden');
-                labelGrowth.innerText = "Taux de croissance (%)";
-                unitGrowth.innerText = "%/m";
+                if (btnExponential) btnExponential.className = "py-2 px-1 text-center rounded-lg border text-xs font-bold transition-all border-indigo-200 bg-indigo-50 text-indigo-700";
+                if (containerFactor) containerFactor.classList.remove('hidden');
+                if (labelGrowth) labelGrowth.innerText = "Taux de croissance (%)";
+                if (unitGrowth) unitGrowth.innerText = "%/m";
             }
 
             generateSales();
         }
 
         function generateSales() {
-            state.startSales = Math.max(0, parseFloat(document.getElementById('inputStartSales').value) || 0);
-            state.growthFactor = Math.max(0, parseFloat(document.getElementById('inputGrowthFactor').value) || 0);
+            const inputStartSales = document.getElementById('inputStartSales');
+            const inputGrowthFactor = document.getElementById('inputGrowthFactor');
+            if (inputStartSales) {
+                state.startSales = Math.max(0, parseFloat(inputStartSales.value) || 0);
+            }
+            if (inputGrowthFactor) {
+                state.growthFactor = Math.max(0, parseFloat(inputGrowthFactor.value) || 0);
+            }
 
             for (let m = 0; m < 36; m++) {
                 if (state.growthType === 'constant') {
@@ -535,8 +632,19 @@
         }
 
         function handleParamChange() {
-            state.unitPrice = Math.max(0, parseFloat(document.getElementById('inputUnitPrice').value) || 0);
-            state.repsCount = Math.max(1, parseInt(document.getElementById('inputRepsCount').value, 10) || 1);
+            const inputMonthlyPrice = document.getElementById('inputMonthlyPrice');
+            const inputAnnualPrice = document.getElementById('inputAnnualPrice');
+            const inputRepsCount = document.getElementById('inputRepsCount');
+
+            if (inputMonthlyPrice) {
+                state.monthlyPrice = Math.max(0, parseFloat(inputMonthlyPrice.value) || 0);
+            }
+            if (inputAnnualPrice) {
+                state.annualPrice = Math.max(0, parseFloat(inputAnnualPrice.value) || 0);
+            }
+            if (inputRepsCount) {
+                state.repsCount = Math.max(1, parseInt(inputRepsCount.value, 10) || 1);
+            }
             calculateAndRender();
         }
 
@@ -546,6 +654,19 @@
         }
 
         function calculateAndRender() {
+            // Mise à jour de l'affichage du mix
+            const labelAnnualMix = document.getElementById('labelAnnualMix');
+            if (labelAnnualMix) labelAnnualMix.innerText = state.pctAnnualMix + "%";
+
+            // Calcul du prix unitaire équivalent MRR moyen (Abonnement Mensuel et Annuel ramené à 12 mois)
+            const annualMonthlyEquivalent = state.annualPrice / 12;
+            const weightedUnitPrice = (state.monthlyPrice * (100 - state.pctAnnualMix) + annualMonthlyEquivalent * state.pctAnnualMix) / 100;
+
+            const labelWeightedPrice = document.getElementById('labelWeightedPrice');
+            if (labelWeightedPrice) {
+                labelWeightedPrice.innerText = `${weightedUnitPrice.toFixed(2)} € HT / mois`;
+            }
+
             const data = [];
             
             let totalCumulativeAgency = 0;
@@ -555,22 +676,42 @@
             let totalCumulativeRevenue = 0;
 
             let activeCustomers = 0;
-            const remainingPct = Math.max(0, 100 - (state.pctAgency + state.pctRep + state.pctChallenge));
 
             for (let m = 0; m < 36; m++) {
                 const newAcquisitionsPerRep = state.monthlyNewSales[m];
                 const teamNewAcquisitions = newAcquisitionsPerRep * state.repsCount;
+                
+                // Règle du Quota d'Activation (OmniViZi) :
+                // Moins de 8 ventes/mois (<2/sem) : 20% commission portefeuille
+                // De 8 à 15 ventes/mois (2 à 4/sem) : 30% commission portefeuille
+                // 16 ventes/mois et plus (>=4/sem) : 35% commission portefeuille
+                let appliedRepRate = 35;
+                let quotaBadgeText = "Excellence";
+                let quotaBadgeColorClass = "bg-emerald-100 text-emerald-800 border-emerald-200";
+
+                if (newAcquisitionsPerRep < 8) {
+                    appliedRepRate = 20;
+                    quotaBadgeText = "Alerte";
+                    quotaBadgeColorClass = "bg-red-100 text-red-800 border-red-200";
+                } else if (newAcquisitionsPerRep < 16) {
+                    appliedRepRate = 30;
+                    quotaBadgeText = "Maintien";
+                    quotaBadgeColorClass = "bg-amber-100 text-amber-800 border-amber-200";
+                }
                 
                 if (m > 0) {
                     activeCustomers = activeCustomers * (1 - state.churnRate / 100);
                 }
                 
                 activeCustomers += teamNewAcquisitions;
-                const monthlyRevenue = activeCustomers * state.unitPrice;
+                const monthlyRevenue = activeCustomers * weightedUnitPrice;
 
                 const agencyShare = (monthlyRevenue * state.pctAgency) / 100;
-                const repShare = (monthlyRevenue * state.pctRep) / 100;
+                const repShare = (monthlyRevenue * appliedRepRate) / 100;
                 const challengeShare = (monthlyRevenue * state.pctChallenge) / 100;
+
+                // La part restante plateforme se protège dynamiquement si le taux de commission des commerciaux diminue !
+                const remainingPct = Math.max(0, 100 - (state.pctAgency + appliedRepRate + state.pctChallenge));
                 const remainingShare = (monthlyRevenue * remainingPct) / 100;
 
                 totalCumulativeRevenue += monthlyRevenue;
@@ -582,12 +723,16 @@
                 data.push({
                     month: m + 1,
                     newAcquisitions: newAcquisitionsPerRep,
+                    quotaBadgeText,
+                    quotaBadgeColorClass,
+                    appliedRepRate,
                     activeCustomers: Math.round(activeCustomers * 10) / 10,
                     monthlyRevenue,
                     agencyShare,
                     repShare,
                     challengeShare,
                     remainingShare,
+                    remainingPct,
                     
                     cumulativeRevenue: totalCumulativeRevenue,
                     cumulativeAgency: totalCumulativeAgency,
@@ -598,9 +743,9 @@
             }
 
             // Sommation par exercice annuel
-            let y1AgencyTotal = 0, y1RepTotal = 0, y1MRR = data[11].monthlyRevenue;
-            let y2AgencyTotal = 0, y2RepTotal = 0, y2MRR = data[23].monthlyRevenue;
-            let y3AgencyTotal = 0, y3RepTotal = 0, y3MRR = data[35].monthlyRevenue;
+            let y1AgencyTotal = 0, y1RepTotal = 0, y1MRRVal = data[11].monthlyRevenue;
+            let y2AgencyTotal = 0, y2RepTotal = 0, y2MRRVal = data[23].monthlyRevenue;
+            let y3AgencyTotal = 0, y3RepTotal = 0, y3MRRVal = data[35].monthlyRevenue;
 
             for (let i = 0; i < 12; i++) { y1AgencyTotal += data[i].agencyShare; y1RepTotal += data[i].repShare; }
             for (let i = 12; i < 24; i++) { y2AgencyTotal += data[i].agencyShare; y2RepTotal += data[i].repShare; }
@@ -611,53 +756,108 @@
             const y3AgencyAvg = y3AgencyTotal / 12; const y3RepAvg = y3RepTotal / 12;
 
             // Rendu DOM Année 1
-            document.getElementById('y1MRR').innerText = `Fin d'année : ${Math.round(y1MRR).toLocaleString('fr-FR')} € MRR`;
-            document.getElementById('y1AgencyTotal').innerText = y1AgencyTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
-            document.getElementById('y1AgencyAvg').innerText = `Moy. ${Math.round(y1AgencyAvg).toLocaleString('fr-FR')} €/m`;
-            document.getElementById('y1RepTotal').innerText = y1RepTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
-            document.getElementById('y1RepAvg').innerText = `Moy. ${Math.round(y1RepAvg).toLocaleString('fr-FR')} €/m`;
-            if (state.repsCount > 1) {
-                document.getElementById('y1RepAvgIndiv').innerText = `~${Math.round(y1RepAvg / state.repsCount).toLocaleString('fr-FR')} €/m par comm.`;
-                document.getElementById('y1RepAvgIndiv').classList.remove('hidden');
-            } else { document.getElementById('y1RepAvgIndiv').classList.add('hidden'); }
+            const y1MRR = document.getElementById('y1MRR');
+            if (y1MRR) y1MRR.innerText = `Fin d'année : ${Math.round(y1MRRVal).toLocaleString('fr-FR')} € MRR`;
+
+            const y1AgencyTotalEl = document.getElementById('y1AgencyTotal');
+            if (y1AgencyTotalEl) y1AgencyTotalEl.innerText = y1AgencyTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+
+            const y1AgencyAvgEl = document.getElementById('y1AgencyAvg');
+            if (y1AgencyAvgEl) y1AgencyAvgEl.innerText = `Moy. ${Math.round(y1AgencyAvg).toLocaleString('fr-FR')} €/m`;
+
+            const y1RepTotalEl = document.getElementById('y1RepTotal');
+            if (y1RepTotalEl) y1RepTotalEl.innerText = y1RepTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+
+            const y1RepAvgEl = document.getElementById('y1RepAvg');
+            if (y1RepAvgEl) y1RepAvgEl.innerText = `Moy. ${Math.round(y1RepAvg).toLocaleString('fr-FR')} €/m`;
+
+            const y1RepAvgIndiv = document.getElementById('y1RepAvgIndiv');
+            if (y1RepAvgIndiv) {
+                if (state.repsCount > 1) {
+                    y1RepAvgIndiv.innerText = `~${Math.round(y1RepAvg / state.repsCount).toLocaleString('fr-FR')} €/m par comm.`;
+                    y1RepAvgIndiv.classList.remove('hidden');
+                } else { 
+                    y1RepAvgIndiv.classList.add('hidden'); 
+                }
+            }
 
             // Rendu DOM Année 2
-            document.getElementById('y2MRR').innerText = `Fin d'année : ${Math.round(y2MRR).toLocaleString('fr-FR')} € MRR`;
-            document.getElementById('y2AgencyTotal').innerText = y2AgencyTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
-            document.getElementById('y2AgencyAvg').innerText = `Moy. ${Math.round(y2AgencyAvg).toLocaleString('fr-FR')} €/m`;
-            document.getElementById('y2RepTotal').innerText = y2RepTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
-            document.getElementById('y2RepAvg').innerText = `Moy. ${Math.round(y2RepAvg).toLocaleString('fr-FR')} €/m`;
-            if (state.repsCount > 1) {
-                document.getElementById('y2RepAvgIndiv').innerText = `~${Math.round(y2RepAvg / state.repsCount).toLocaleString('fr-FR')} €/m par comm.`;
-                document.getElementById('y2RepAvgIndiv').classList.remove('hidden');
-            } else { document.getElementById('y2RepAvgIndiv').classList.add('hidden'); }
+            const y2MRR = document.getElementById('y2MRR');
+            if (y2MRR) y2MRR.innerText = `Fin d'année : ${Math.round(y2MRRVal).toLocaleString('fr-FR')} € MRR`;
+
+            const y2AgencyTotalEl = document.getElementById('y2AgencyTotal');
+            if (y2AgencyTotalEl) y2AgencyTotalEl.innerText = y2AgencyTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+
+            const y2AgencyAvgEl = document.getElementById('y2AgencyAvg');
+            if (y2AgencyAvgEl) y2AgencyAvgEl.innerText = `Moy. ${Math.round(y2AgencyAvg).toLocaleString('fr-FR')} €/m`;
+
+            const y2RepTotalEl = document.getElementById('y2RepTotal');
+            if (y2RepTotalEl) y2RepTotalEl.innerText = y2RepTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+
+            const y2RepAvgEl = document.getElementById('y2RepAvg');
+            if (y2RepAvgEl) y2RepAvgEl.innerText = `Moy. ${Math.round(y2RepAvg).toLocaleString('fr-FR')} €/m`;
+
+            const y2RepAvgIndiv = document.getElementById('y2RepAvgIndiv');
+            if (y2RepAvgIndiv) {
+                if (state.repsCount > 1) {
+                    y2RepAvgIndiv.innerText = `~${Math.round(y2RepAvg / state.repsCount).toLocaleString('fr-FR')} €/m par comm.`;
+                    y2RepAvgIndiv.classList.remove('hidden');
+                } else { 
+                    y2RepAvgIndiv.classList.add('hidden'); 
+                }
+            }
 
             // Rendu DOM Année 3
-            document.getElementById('y3MRR').innerText = `Fin d'année : ${Math.round(y3MRR).toLocaleString('fr-FR')} € MRR`;
-            document.getElementById('y3AgencyTotal').innerText = y3AgencyTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
-            document.getElementById('y3AgencyAvg').innerText = `Moy. ${Math.round(y3AgencyAvg).toLocaleString('fr-FR')} €/m`;
-            document.getElementById('y3RepTotal').innerText = y3RepTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
-            document.getElementById('y3RepAvg').innerText = `Moy. ${Math.round(y3RepAvg).toLocaleString('fr-FR')} €/m`;
-            if (state.repsCount > 1) {
-                document.getElementById('y3RepAvgIndiv').innerText = `~${Math.round(y3RepAvg / state.repsCount).toLocaleString('fr-FR')} €/m par comm.`;
-                document.getElementById('y3RepAvgIndiv').classList.remove('hidden');
-            } else { document.getElementById('y3RepAvgIndiv').classList.add('hidden'); }
+            const y3MRR = document.getElementById('y3MRR');
+            if (y3MRR) y3MRR.innerText = `Fin d'année : ${Math.round(y3MRRVal).toLocaleString('fr-FR')} € MRR`;
+
+            const y3AgencyTotalEl = document.getElementById('y3AgencyTotal');
+            if (y3AgencyTotalEl) y3AgencyTotalEl.innerText = y3AgencyTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+
+            const y3AgencyAvgEl = document.getElementById('y3AgencyAvg');
+            if (y3AgencyAvgEl) y3AgencyAvgEl.innerText = `Moy. ${Math.round(y3AgencyAvg).toLocaleString('fr-FR')} €/m`;
+
+            const y3RepTotalEl = document.getElementById('y3RepTotal');
+            if (y3RepTotalEl) y3RepTotalEl.innerText = y3RepTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+
+            const y3RepAvgEl = document.getElementById('y3RepAvg');
+            if (y3RepAvgEl) y3RepAvgEl.innerText = `Moy. ${Math.round(y3RepAvg).toLocaleString('fr-FR')} €/m`;
+
+            const y3RepAvgIndiv = document.getElementById('y3RepAvgIndiv');
+            if (y3RepAvgIndiv) {
+                if (state.repsCount > 1) {
+                    y3RepAvgIndiv.innerText = `~${Math.round(y3RepAvg / state.repsCount).toLocaleString('fr-FR')} €/m par comm.`;
+                    y3RepAvgIndiv.classList.remove('hidden');
+                } else { 
+                    y3RepAvgIndiv.classList.add('hidden'); 
+                }
+            }
 
             renderTable(data);
-            renderCharts(data);
+            renderCharts(data, weightedPrice);
         }
 
         function renderTable(data) {
             const tableBody = document.getElementById('tableBody');
+            if (!tableBody) return;
             tableBody.innerHTML = '';
 
             data.forEach((row, index) => {
                 const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition-colors border-b border-slate-100";
+                tr.className = "hover:bg-slate-50/80 transition-colors border-b border-slate-100";
                 
                 const remainingCell = state.presentationMode ? '' : `
-                    <td class="px-3 py-2 font-bold text-emerald-600 bg-emerald-50/20">${row.remainingShare.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}</td>
+                    <td class="px-3 py-2 font-bold text-emerald-600 bg-emerald-50/25">${row.remainingShare.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })} <span class="text-[9px] font-normal text-slate-400">(${row.remainingPct}%)</span></td>
                 `;
+
+                // Intitule d'en-tête dynamique du taux pour le commercial
+                const thRep = document.getElementById('thRep');
+                if (thRep) thRep.innerText = `Comm. (Dynamique)`;
+                
+                const thRemaining = document.getElementById('thRemaining');
+                if (!state.presentationMode && thRemaining) {
+                    thRemaining.innerText = `Plateforme, R&D & Support`;
+                }
 
                 tr.innerHTML = `
                     <td class="px-3 py-2 text-center font-bold text-slate-500 border-r border-slate-100">${row.month}</td>
@@ -666,10 +866,15 @@
                             onchange="handleManualSalesChange(${index}, this.value)"
                             class="w-full text-center bg-transparent focus:bg-white focus:ring-1 focus:ring-indigo-500 focus:outline-none border border-transparent hover:border-slate-300 focus:border-indigo-500 rounded py-1 px-1 font-bold text-slate-900 transition-all">
                     </td>
-                    <td class="px-3 py-2 font-semibold text-slate-800 text-center bg-slate-50/50">${Math.round(row.activeCustomers)}</td>
+                    <td class="px-2 py-1 text-center">
+                        <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${row.quotaBadgeColorClass}">
+                            ${row.quotaBadgeText} (${row.appliedRepRate}%)
+                        </span>
+                    </td>
+                    <td class="px-3 py-2 font-semibold text-slate-800 text-center bg-slate-50/50">${Math.round(row.activeCustomers).toLocaleString('fr-FR')}</td>
                     <td class="px-3 py-2 font-bold text-slate-900">${row.monthlyRevenue.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}</td>
                     <td class="px-3 py-2 font-semibold text-red-600">${row.agencyShare.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}</td>
-                    <td class="px-3 py-2 font-semibold text-violet-600">${row.repShare.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}</td>
+                    <td class="px-3 py-2 font-bold text-violet-700 bg-violet-50/30">${row.repShare.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}</td>
                     <td class="px-3 py-2 font-semibold text-amber-600">${row.challengeShare.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}</td>
                     ${remainingCell}
                 `;
@@ -683,17 +888,17 @@
             const btnMonth = document.getElementById('btnChartMonthly');
 
             if (type === 'cumulative') {
-                btnCumul.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-sm";
-                btnMonth.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900";
+                if (btnCumul) btnCumul.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-sm";
+                if (btnMonth) btnMonth.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900";
             } else {
-                btnMonth.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-sm";
-                btnCumul.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900";
+                if (btnMonth) btnMonth.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-sm";
+                if (btnCumul) btnCumul.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900";
             }
 
             calculateAndRender();
         }
 
-        function renderCharts(data) {
+        function renderCharts(data, weightedPrice) {
             const ctx = document.getElementById('mainChart').getContext('2d');
             if (chartInstance) chartInstance.destroy();
 
@@ -779,30 +984,41 @@
 
         function exportToCSV() {
             let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
-            csvContent += "Mois;Nouveaux Clients par Commercial;Nombre de Commerciaux;Clients Actifs Cumules Equipe;CA Recurrent Mensuel (MRR) Equipe (€);Part Agence (€);Part Commercial (€);Budget Challenge (€);Plateforme RND Support (€)\r\n";
+            csvContent += "Mois;Nouveaux Clients par Commercial;Quota commercial applique;Nombre de Commerciaux;Clients Actifs Cumules Equipe;CA Recurrent Mensuel (MRR) Equipe (€);Part Agence (€);Part Commercial (€);Budget Challenge (€);Plateforme RND Support (€)\r\n";
 
-            const remainingPct = Math.max(0, 100 - (state.pctAgency + state.pctRep + state.pctChallenge));
             let activeCustomers = 0;
+            const annualMonthlyEquivalent = state.annualPrice / 12;
+            const weightedUnitPrice = (state.monthlyPrice * (100 - state.pctAnnualMix) + annualMonthlyEquivalent * state.pctAnnualMix) / 100;
 
             for (let m = 0; m < 36; m++) {
                 const newAcquisitionsPerRep = state.monthlyNewSales[m];
                 const teamNewAcquisitions = newAcquisitionsPerRep * state.repsCount;
+                
+                let appliedRepRate = 35;
+                if (newAcquisitionsPerRep < 8) {
+                    appliedRepRate = 20;
+                } else if (newAcquisitionsPerRep < 16) {
+                    appliedRepRate = 30;
+                }
+
                 if (m > 0) activeCustomers = activeCustomers * (1 - state.churnRate / 100);
                 activeCustomers += teamNewAcquisitions;
 
-                const monthlyRevenue = activeCustomers * state.unitPrice;
+                const monthlyRevenue = activeCustomers * weightedUnitPrice;
                 const agency = (monthlyRevenue * state.pctAgency) / 100;
-                const rep = (monthlyRevenue * state.pctRep) / 100;
+                const rep = (monthlyRevenue * appliedRepRate) / 100;
                 const challenge = (monthlyRevenue * state.pctChallenge) / 100;
+                
+                const remainingPct = Math.max(0, 100 - (state.pctAgency + appliedRepRate + state.pctChallenge));
                 const remaining = (monthlyRevenue * remainingPct) / 100;
 
-                csvContent += `${m + 1};${newAcquisitionsPerRep};${state.repsCount};${Math.round(activeCustomers)};${monthlyRevenue.toFixed(2)};${agency.toFixed(2)};${rep.toFixed(2)};${challenge.toFixed(2)};${remaining.toFixed(2)}\r\n`;
+                csvContent += `${m + 1};${newAcquisitionsPerRep};${appliedRepRate}%;${state.repsCount};${Math.round(activeCustomers)};${monthlyRevenue.toFixed(2)};${agency.toFixed(2)};${rep.toFixed(2)};${challenge.toFixed(2)};${remaining.toFixed(2)}\r\n`;
             }
 
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Simulation_Gains_Recurrents.csv`);
+            link.setAttribute("download", `Simulation_Gains_Recurrents_OmniViZi.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
