@@ -127,7 +127,7 @@
 
                 <!-- Taux de désabonnement (Churn) -->
                 <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1.5">Taux d'Attrition (Churn mensuel)</label>
+                    <label class="block text-xs font-semibold text-slate-600 mb-1.5">Taux de Désabonnement (Churn mensuel)</label>
                     <div class="bg-red-50/50 p-3 rounded-xl border border-red-100">
                         <div class="flex justify-between text-xs font-semibold mb-1">
                             <span class="text-red-700 flex items-center"><i class="fa-solid fa-user-minus mr-1.5"></i> Churn mensuel moyen</span>
@@ -395,7 +395,7 @@
         const state = {
             monthlyPrice: 99,    // Prix de base mensuel sans engagement
             annualPrice: 990,    // Prix de base annuel avec engagement
-            pctAnnualMix: 20,    // Taux de conversion à l'offre annuelle par défaut
+            pctAnnualMix: 25,    // Taux de conversion à l'offre annuelle par défaut
             pctAgency: 10,       // Agence 10% par défaut
             pctChallenge: 5,     // Challenge 5% par défaut
             churnRate: 5.0,
@@ -467,7 +467,7 @@
         function resetToDefaults() {
             state.monthlyPrice = 99;
             state.annualPrice = 990;
-            state.pctAnnualMix = 20;
+            state.pctAnnualMix = 25;
             state.pctAgency = 10;
             state.pctChallenge = 5;
             state.churnRate = 5.0;
