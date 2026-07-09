@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulateur de Commissionnement Récurrent (MRR) - 36 Mois</title>
+    <title>Simulateur de Commissionnement Récurrent (Cash-flow & Upfront) - 36 Mois</title>
     <!-- Tailwind CSS pour un design moderne et responsive -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js pour des visualisations dynamiques et interactives -->
@@ -23,18 +23,18 @@
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col text-slate-800 animate-fadeIn">
+<body class="min-h-screen flex flex-col text-slate-800 bg-slate-50">
 
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <!-- LOGO SECRET : Cliquer dessus active/désactive la visibilité de la marge plateforme et du MRR -->
-                <div onclick="togglePresentationMode()" title="Simulateur" class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md shadow-indigo-100 cursor-pointer select-none hover:bg-indigo-700 active:scale-95 transition-all">
+                <!-- LOGO SECRET : Cliquer dessus active/désactive la visibilité de la marge plateforme et du CA -->
+                <div onclick="togglePresentationMode()" id="logoContainer" title="Basculer le Mode Présentation (Masquer/Afficher les éléments internes)" class="bg-indigo-600 text-white p-2.5 rounded-xl shadow-md shadow-indigo-100 cursor-pointer select-none hover:bg-indigo-700 active:scale-95 transition-all">
                     <i id="logoIcon" class="fa-solid fa-arrows-spin text-lg transition-transform duration-500"></i>
                 </div>
                 <div>
-                    <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Simulateur de Gains Récurrents</h1>
-                    <p class="text-[10px] sm:text-xs text-slate-500 font-medium">Modélisation de commissions récurrentes cumulatives sur 36 mois</p>
+                    <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Simulateur de Gains - Vision Trésorerie (Upfront)</h1>
+                    <p class="text-[10px] sm:text-xs text-slate-500 font-medium">Modélisation des encaissements réels et commissions immédiates sur 36 mois</p>
                 </div>
             </div>
             <div class="flex items-center space-x-3">
@@ -62,7 +62,7 @@
                     <h2 class="text-xs font-extrabold uppercase tracking-widest text-indigo-300">Règles Quota OmniViZi</h2>
                 </div>
                 <p class="text-[11px] text-slate-300 leading-relaxed">
-                    Le taux de commission du portefeuille commercial s'ajuste dynamiquement selon les ventes hebdomadaires moyennes réalisées durant le mois :
+                    Le taux de commission du portefeuille commercial s'ajuste dynamiquement selon le volume total de ventes réalisées durant le mois :
                 </p>
                 <div class="space-y-2 text-[11px] pt-1">
                     <div class="flex items-center justify-between p-2 rounded-lg bg-slate-800/40 border border-slate-700/30">
@@ -70,16 +70,16 @@
                         <span class="font-bold bg-red-950/50 text-red-300 px-2 py-0.5 rounded border border-red-900/30">20% Comm.</span>
                     </div>
                     <div class="flex items-center justify-between p-2 rounded-lg bg-slate-800/40 border border-slate-700/30">
-                        <span class="font-medium text-amber-400"><i class="fa-solid fa-clock-rotate-left mr-1.5"></i> 8 à 15 ventes (Maintien)</span>
+                        <span class="font-semibold text-amber-400"><i class="fa-solid fa-clock-rotate-left mr-1.5"></i> 8 à 15 ventes (Maintien)</span>
                         <span class="font-bold bg-amber-950/50 text-amber-300 px-2 py-0.5 rounded border border-amber-900/30">30% Comm.</span>
                     </div>
                     <div class="flex items-center justify-between p-2 rounded-lg bg-indigo-500/10 border border-indigo-500/20">
-                        <span class="font-semibold text-emerald-400"><i class="fa-solid fa-trophy mr-1.5"></i> 16+ ventes (Excellence)</span>
+                        <span class="font-bold text-emerald-400"><i class="fa-solid fa-trophy mr-1.5"></i> 16+ ventes (Excellence)</span>
                         <span class="font-bold bg-emerald-950/50 text-emerald-300 px-2 py-0.5 rounded border border-emerald-900/30">35% Comm.</span>
                     </div>
                 </div>
                 <div class="text-[9px] text-slate-400 text-center italic pt-1">
-                    Cible visée : 4 ventes par semaine (soit 16 par mois) par commercial.
+                    Cible visée : 16 ventes par mois par commercial (soit une moyenne indicative de 4 par semaine).
                 </div>
             </div>
             
@@ -112,28 +112,26 @@
                     </div>
                 </div>
 
-                <!-- Mix de facturation (Curseur) -->
-                <div class="bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 space-y-2">
-                    <div class="flex justify-between text-xs font-semibold">
-                        <span class="text-indigo-800 flex items-center"><i class="fa-solid fa-file-contract mr-1.5"></i> Mix d'Abonnement Annuel</span>
-                        <span id="labelAnnualMix" class="font-bold text-indigo-900">25%</span>
-                    </div>
-                    <input type="range" id="rangeAnnualMix" min="0" max="100" step="5" value="25" oninput="handleAnnualMixChange()" class="w-full h-1.5 bg-indigo-100 rounded-lg appearance-none cursor-pointer">
-                    <div class="flex justify-between items-center text-[10px] text-slate-500 pt-1 font-medium">
-                        <span>Panier Moyen MRR :</span>
-                        <span id="labelWeightedPrice" class="font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-indigo-100">94.88 € HT / mois</span>
-                    </div>
-                </div>
-
-                <!-- Taux de désabonnement (Churn) -->
-                <div>
-                    <label class="block text-xs font-semibold text-slate-600 mb-1.5">Taux d'Attrition (Churn mensuel)</label>
+                <!-- Taux de désabonnement (Churn) Indépendants -->
+                <div class="space-y-3 pt-2">
+                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider">Taux d'Attrition (Churn mensuel)</label>
+                    
+                    <!-- Churn Mensuel -->
                     <div class="bg-red-50/50 p-3 rounded-xl border border-red-100">
                         <div class="flex justify-between text-xs font-semibold mb-1">
-                            <span class="text-red-700 flex items-center"><i class="fa-solid fa-user-minus mr-1.5"></i> Churn mensuel moyen</span>
-                            <span id="labelChurn" class="font-bold text-red-800">5.0%</span>
+                            <span class="text-red-700 flex items-center"><i class="fa-solid fa-user-minus mr-1.5"></i> Offre Mensuelle</span>
+                            <span id="labelChurnMensuel" class="font-bold text-red-800">5.0%</span>
                         </div>
-                        <input type="range" id="rangeChurn" min="0" max="15" step="0.5" value="5" oninput="handleChurnChange()" class="w-full h-1.5 bg-red-100 rounded-lg appearance-none cursor-pointer">
+                        <input type="range" id="rangeChurnMensuel" min="0" max="15" step="0.5" value="5" oninput="handleChurnMensuelChange()" class="w-full h-1.5 bg-red-100 rounded-lg appearance-none cursor-pointer">
+                    </div>
+
+                    <!-- Churn Annuel -->
+                    <div class="bg-orange-50/50 p-3 rounded-xl border border-orange-100">
+                        <div class="flex justify-between text-xs font-semibold mb-1">
+                            <span class="text-orange-700 flex items-center"><i class="fa-solid fa-calendar-minus mr-1.5"></i> Offre Annuelle</span>
+                            <span id="labelChurnAnnuel" class="font-bold text-orange-800">2.0%</span>
+                        </div>
+                        <input type="range" id="rangeChurnAnnuel" min="0" max="15" step="0.5" value="2" oninput="handleChurnAnnuelChange()" class="w-full h-1.5 bg-orange-100 rounded-lg appearance-none cursor-pointer">
                     </div>
                 </div>
 
@@ -146,7 +144,7 @@
                     <!-- Part Agence -->
                     <div>
                         <div class="flex justify-between text-xs text-slate-500 mb-1">
-                            <span>Part Agence (Récurrente)</span>
+                            <span>Part Agence (Encaissée)</span>
                             <span id="labelAgency" class="font-bold text-slate-900">10%</span>
                         </div>
                         <input type="range" id="rangeAgency" min="0" max="50" value="10" oninput="handleRangeChange('Agency')" class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer">
@@ -155,7 +153,7 @@
                     <!-- Budget Challenge / Cadeaux -->
                     <div>
                         <div class="flex justify-between text-xs text-slate-500 mb-1">
-                            <span>Budget Challenge (Récurrent)</span>
+                            <span>Budget Challenge (Encaissé)</span>
                             <span id="labelChallenge" class="font-bold text-slate-900">5%</span>
                         </div>
                         <input type="range" id="rangeChallenge" min="0" max="25" value="5" oninput="handleRangeChange('Challenge')" class="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer">
@@ -178,10 +176,10 @@
                         <div><span class="inline-block w-2 h-2 rounded-full bg-red-500 mr-1"></span>Agence</div>
                         <div><span class="inline-block w-2 h-2 rounded-full bg-violet-400 mr-1"></span>Comm. (Max)</div>
                         <div><span class="inline-block w-2 h-2 rounded-full bg-amber-400 mr-1"></span>Chal.</div>
-                        <div><span class="inline-block w-2 h-2 rounded-full bg-emerald-50 mr-1"></span>Plateforme</div>
+                        <div><span class="inline-block w-2 h-2 rounded-full bg-emerald-500 mr-1"></span>Plateforme</div>
                     </div>
                     <p class="text-[9px] text-slate-400 mt-2 leading-relaxed">
-                        *Le taux commercial (violet) s'adapte dynamiquement selon les quotas d'acquisition mensuels par commercial.
+                        *Le taux commercial (violet) s'applique instantanément au volume d'encaissements Upfront collecté chaque mois.
                     </p>
                 </div>
             </div>
@@ -220,10 +218,16 @@
                     </div>
                 </div>
 
-                <!-- Ventes initiales -->
-                <div>
-                    <label for="inputStartSales" class="block text-xs font-semibold text-slate-600 mb-1.5">Nouveaux clients au Mois 1 (par commercial)</label>
-                    <input type="number" id="inputStartSales" value="16" min="0" oninput="generateSales()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                <!-- Ventes initiales séparées -->
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label for="inputStartSalesMensuel" class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mensuels au Mois 1</label>
+                        <input type="number" id="inputStartSalesMensuel" value="12" min="0" oninput="generateSales()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                    </div>
+                    <div>
+                        <label for="inputStartSalesAnnuel" class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Annuels au Mois 1</label>
+                        <input type="number" id="inputStartSalesAnnuel" value="4" min="0" oninput="generateSales()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                    </div>
                 </div>
 
                 <!-- Facteur de croissance -->
@@ -246,17 +250,17 @@
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
                 <div>
                     <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider flex items-center">
-                        <i class="fa-solid fa-calendar-days text-indigo-500 mr-2"></i> Projections et Bilans Exercices Annuels
+                        <i class="fa-solid fa-calendar-days text-indigo-500 mr-2"></i> <span id="titleBilanAnnuel">Projections et Bilans Annuels (Trésorerie / Cash-flow)</span>
                     </h2>
-                    <p class="text-[11px] text-slate-500">Suivi des performances récurrentes par année de collaboration (basé sur l'atteinte des quotas d'acquisition).</p>
+                    <p class="text-[11px] text-slate-500" id="bilanDesc">Suivi des flux financiers réels encaissés et distribués par année de collaboration.</p>
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <!-- Année 1 -->
                     <div class="bg-slate-50/70 rounded-xl p-4 border border-slate-200/60 hover:border-indigo-100 hover:bg-slate-50 transition-all flex flex-col justify-between">
                         <div class="border-b border-slate-200/80 pb-2 mb-3">
-                            <span class="text-xs font-bold text-slate-700 uppercase tracking-wide block">Année 1 <span class="text-[10px] text-slate-400 font-normal">(Mois 1 à 12)</span></span>
-                            <span id="y1MRR" class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-1">Fin d'année : 0 € MRR</span>
+                            <span class="text-xs font-bold text-slate-700 uppercase tracking-wide block font-semibold">Année 1 <span class="text-[10px] text-slate-400 font-normal">(Mois 1 à 12)</span></span>
+                            <span id="y1MRR" class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-1">Encaissements : 0 €</span>
                         </div>
                         <div class="space-y-3">
                             <div>
@@ -280,8 +284,8 @@
                     <!-- Année 2 -->
                     <div class="bg-slate-50/70 rounded-xl p-4 border border-slate-200/60 hover:border-indigo-100 hover:bg-slate-50 transition-all flex flex-col justify-between">
                         <div class="border-b border-slate-200/80 pb-2 mb-3">
-                            <span class="text-xs font-bold text-slate-700 uppercase tracking-wide block">Année 2 <span class="text-[10px] text-slate-400 font-normal">(Mois 13 à 24)</span></span>
-                            <span id="y2MRR" class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-1">Fin d'année : 0 € MRR</span>
+                            <span class="text-xs font-bold text-slate-700 uppercase tracking-wide block font-semibold">Année 2 <span class="text-[10px] text-slate-400 font-normal">(Mois 13 à 24)</span></span>
+                            <span id="y2MRR" class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-1">Encaissements : 0 €</span>
                         </div>
                         <div class="space-y-3">
                             <div>
@@ -305,8 +309,8 @@
                     <!-- Année 3 -->
                     <div class="bg-slate-50/70 rounded-xl p-4 border border-slate-200/60 hover:border-indigo-100 hover:bg-slate-50 transition-all flex flex-col justify-between">
                         <div class="border-b border-slate-200/80 pb-2 mb-3">
-                            <span class="text-xs font-bold text-slate-700 uppercase tracking-wide block">Année 3 <span class="text-[10px] text-slate-400 font-normal">(Mois 25 à 36)</span></span>
-                            <span id="y3MRR" class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-1">Fin d'année : 0 € MRR</span>
+                            <span class="text-xs font-bold text-slate-700 uppercase tracking-wide block font-semibold">Année 3 <span class="text-[10px] text-slate-400 font-normal">(Mois 25 à 36)</span></span>
+                            <span id="y3MRR" class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full inline-block mt-1">Encaissements : 0 €</span>
                         </div>
                         <div class="space-y-3">
                             <div>
@@ -333,15 +337,15 @@
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <div>
-                        <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Évolution Visuelle des Revenus</h2>
-                        <p class="text-xs text-slate-500">Suivi dynamique de la montée en puissance de l'activité</p>
+                        <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider" id="chartMainTitle">Flux de Trésorerie Mensuels (Cash-flow)</h2>
+                        <p class="text-xs text-slate-500" id="chartSubTitle">Suivi dynamique de la montée en puissance de l'activité</p>
                     </div>
                     <div class="flex items-center bg-slate-100 p-1 rounded-xl self-start">
                         <button onclick="toggleChartType('cumulative')" id="btnChartCumulative" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-sm">
                             Cumulé
                         </button>
                         <button onclick="toggleChartType('monthly')" id="btnChartMonthly" class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600">
-                            Mensuel (MRR)
+                            Mensuel
                         </button>
                     </div>
                 </div>
@@ -355,10 +359,10 @@
                 <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <div>
                         <h2 class="text-sm font-bold text-slate-900 uppercase tracking-wider">Registre de Vente & Portefeuille Clients (36 Mois)</h2>
-                        <p class="text-xs text-slate-500">Ajustez directement les <strong>Nouveaux (par commercial)</strong> dans le tableau ci-dessous pour voir le quota et la commission s'ajuster automatiquement.</p>
+                        <p class="text-xs text-slate-500">Ajustez directement les nouvelles ventes dans le tableau ci-dessous pour voir le quota et la commission s'ajuster automatiquement.</p>
                     </div>
-                    <div class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full flex items-center self-start sm:self-center">
-                        <i class="fa-solid fa-circle text-[8px] mr-1.5 animate-pulse"></i> Modèle récurrent (Attrition 5% incluse)
+                    <div id="badgeAttrition" class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full flex items-center self-start sm:self-center">
+                        <i class="fa-solid fa-circle text-[8px] mr-1.5 animate-pulse"></i> Modèle récurrent (Upfront Trésorerie)
                     </div>
                 </div>
 
@@ -366,11 +370,12 @@
                     <table class="min-w-full divide-y divide-slate-200 text-left text-xs">
                         <thead class="bg-slate-50 sticky top-0 z-10 border-b border-slate-200 text-[10px] uppercase tracking-wider text-slate-500">
                             <tr>
-                                <th scope="col" class="px-3 py-3 font-semibold text-center w-12">Mois</th>
-                                <th scope="col" class="px-3 py-3 font-semibold w-24 bg-slate-100/80">Nouveaux (par commercial)</th>
-                                <th scope="col" class="px-3 py-3 font-semibold text-center">Quota</th>
-                                <th scope="col" class="px-3 py-3 font-semibold w-24 text-center">Actifs (Équipe)</th>
-                                <th scope="col" class="px-3 py-3 font-semibold">CA Mensuel (MRR)</th>
+                                <th scope="col" class="px-2 py-3 font-semibold text-center w-10">Mois</th>
+                                <th scope="col" class="px-2 py-3 font-semibold w-24 bg-slate-100/80 text-center">Nouv. Mensuels (par comm.)</th>
+                                <th scope="col" class="px-2 py-3 font-semibold w-24 bg-indigo-50/50 text-center">Nouv. Annuels (par comm.)</th>
+                                <th scope="col" class="px-2 py-3 font-semibold text-center w-12">Quota</th>
+                                <th scope="col" class="px-2 py-3 font-semibold w-20 text-center">Actifs (Équipe)</th>
+                                <th scope="col" class="px-3 py-3 font-semibold" id="thMRR">Encaissements Réels (Cash)</th>
                                 <th id="thAgency" scope="col" class="px-3 py-3 font-semibold text-red-700">Agence (10%)</th>
                                 <th id="thRep" scope="col" class="px-3 py-3 font-semibold text-violet-700">Comm. (Dynamique)</th>
                                 <th id="thChallenge" scope="col" class="px-3 py-3 font-semibold text-amber-700">Chal. (5%)</th>
@@ -393,21 +398,23 @@
 
     <script>
         const state = {
-            monthlyPrice: 99,    // Prix de base mensuel sans engagement
-            annualPrice: 990,    // Prix de base annuel avec engagement
-            pctAnnualMix: 25,    // Taux de conversion à l'offre annuelle par défaut (25%)
-            pctAgency: 10,       // Agence 10% par défaut
-            pctChallenge: 5,     // Challenge 5% par défaut
-            churnRate: 5.0,
-            repsCount: 5,        // 5 commerciaux par défaut
-            presentationMode: true, // ACTIVE PAR DÉFAUT : la marge et le MRR sont invisibles à l'ouverture
+            monthlyPrice: 99,       // Prix de base mensuel sans engagement
+            annualPrice: 990,      // Prix de base annuel avec engagement
+            pctAgency: 10,         // Agence 10% par défaut
+            pctChallenge: 5,       // Challenge 5% par défaut
+            churnRateMensuel: 5.0, // Taux de churn mensuel pour l'offre mensuelle
+            churnRateAnnuel: 2.0,  // Taux de churn mensuel pour l'offre annuelle
+            repsCount: 5,          // 5 commerciaux par défaut
+            presentationMode: true, // ACTIVE PAR DÉFAUT : la marge plateforme et le CA global sont masqués au début
             rotationDegree: 0,
             
             growthType: 'constant',
-            startSales: 16,      // 16 nouveaux clients par mois
-            growthFactor: 5,
+            startSalesMensuel: 12, // 12 nouveaux clients mensuels par mois au départ
+            startSalesAnnuel: 4,   // 4 nouveaux clients annuels par mois au départ
+            growthFactor: 5,       // Facteur d'augmentation pour linear/exponential
             
-            monthlyNewSales: Array(36).fill(0),
+            monthlyNewSalesMensuel: Array(36).fill(0),
+            monthlyNewSalesAnnuel: Array(36).fill(0),
             chartType: 'cumulative'
         };
 
@@ -420,28 +427,41 @@
             calculateAndRender();
         };
 
-        // Applique l'état du mode présentation (masquage/affichage de la part plateforme et du MRR)
+        // Applique l'état du mode présentation (masquage/affichage de la part plateforme et du CA)
         function applyPresentationMode() {
             const companyMarginBlock = document.getElementById('companyMarginBlock');
             const thRemaining = document.getElementById('thRemaining');
+            const thMRR = document.getElementById('thMRR');
             const y1MRR = document.getElementById('y1MRR');
             const y2MRR = document.getElementById('y2MRR');
             const y3MRR = document.getElementById('y3MRR');
+            const logoIcon = document.getElementById('logoIcon');
 
-            if (companyMarginBlock && thRemaining && y1MRR && y2MRR && y3MRR) {
+            // Mise à jour de l'animation de rotation du bouton secret
+            state.rotationDegree += 180;
+            if (logoIcon) {
+                logoIcon.style.transform = `rotate(${state.rotationDegree}deg)`;
+            }
+
+            if (companyMarginBlock && thRemaining && thMRR && y1MRR && y2MRR && y3MRR) {
                 if (state.presentationMode) {
                     // Masquer la marge plateforme
                     companyMarginBlock.classList.add('opacity-0', 'h-0', 'overflow-hidden', 'mt-0', 'p-0', 'border-0');
                     thRemaining.classList.add('hidden');
-                    // Masquer les MRR des projections annuelles
+                    thMRR.classList.add('hidden');
+                    
+                    // Masquer les encaissements des projections annuelles
                     y1MRR.classList.add('hidden');
                     y2MRR.classList.add('hidden');
                     y3MRR.classList.add('hidden');
                 } else {
                     // Tout afficher
                     companyMarginBlock.classList.remove('opacity-0', 'h-0', 'overflow-hidden', 'mt-0', 'p-0', 'border-0');
+                    companyMarginBlock.classList.add('mt-2', 'p-3', 'border');
                     thRemaining.classList.remove('hidden');
-                    // Afficher les MRR des projections annuelles
+                    thMRR.classList.remove('hidden');
+                    
+                    // Afficher les encaissements des projections annuelles
                     y1MRR.classList.remove('hidden');
                     y2MRR.classList.remove('hidden');
                     y3MRR.classList.remove('hidden');
@@ -449,597 +469,597 @@
             }
         }
 
-        // Action magique discrète déclenchée en cliquant sur le logo
+        // Basculer l'état du mode présentation
         function togglePresentationMode() {
             state.presentationMode = !state.presentationMode;
-            
-            // Animation de rotation esthétique sur l'icône du logo
-            state.rotationDegree += 180;
-            const logoIcon = document.getElementById('logoIcon');
-            if (logoIcon) {
-                logoIcon.style.transform = `rotate(${state.rotationDegree}deg)`;
-            }
-            
             applyPresentationMode();
-            calculateAndRender();
+            calculateAndRender(); // Re-calculer pour masquer/ré-afficher dans les cellules du tableau et le graphique
         }
 
-        function resetToDefaults() {
-            state.monthlyPrice = 99;
-            state.annualPrice = 990;
-            state.pctAnnualMix = 25;
-            state.pctAgency = 10;
-            state.pctChallenge = 5;
-            state.churnRate = 5.0;
-            state.repsCount = 5;
-            state.growthType = 'constant';
-            state.startSales = 16;
-            state.growthFactor = 5;
-            state.presentationMode = true; // Repasse en mode masqué par défaut à la réinitialisation
-            state.rotationDegree = 0;
-            
-            const logoIcon = document.getElementById('logoIcon');
-            if (logoIcon) logoIcon.style.transform = 'rotate(0deg)';
-            
-            const inputMonthlyPrice = document.getElementById('inputMonthlyPrice');
-            if (inputMonthlyPrice) inputMonthlyPrice.value = state.monthlyPrice;
-
-            const inputAnnualPrice = document.getElementById('inputAnnualPrice');
-            if (inputAnnualPrice) inputAnnualPrice.value = state.annualPrice;
-
-            const rangeAnnualMix = document.getElementById('rangeAnnualMix');
-            if (rangeAnnualMix) rangeAnnualMix.value = state.pctAnnualMix;
-            
-            const rangeChurn = document.getElementById('rangeChurn');
-            if (rangeChurn) rangeChurn.value = state.churnRate;
-            
-            const labelChurn = document.getElementById('labelChurn');
-            if (labelChurn) labelChurn.innerText = "5.0%";
-            
-            const rangeAgency = document.getElementById('rangeAgency');
-            if (rangeAgency) rangeAgency.value = state.pctAgency;
-            
-            const rangeChallenge = document.getElementById('rangeChallenge');
-            if (rangeChallenge) rangeChallenge.value = state.pctChallenge;
-            
-            const inputStartSales = document.getElementById('inputStartSales');
-            if (inputStartSales) inputStartSales.value = state.startSales;
-            
-            const inputGrowthFactor = document.getElementById('inputGrowthFactor');
-            if (inputGrowthFactor) inputGrowthFactor.value = state.growthFactor;
-            
-            const inputRepsCount = document.getElementById('inputRepsCount');
-            if (inputRepsCount) inputRepsCount.value = state.repsCount;
-            
-            applyPresentationMode();
-            updateSlidersUI();
-            setGrowthType('constant');
-        }
-
-        function handleChurnChange() {
-            const rangeChurn = document.getElementById('rangeChurn');
-            if (rangeChurn) {
-                state.churnRate = parseFloat(rangeChurn.value);
-            }
-            const labelChurn = document.getElementById('labelChurn');
-            if (labelChurn) {
-                labelChurn.innerText = state.churnRate.toFixed(1) + "%";
-            }
-            calculateAndRender();
-        }
-
-        // Gère la modification du mix de facturation annuel
-        function handleAnnualMixChange() {
-            const rangeAnnualMix = document.getElementById('rangeAnnualMix');
-            if (rangeAnnualMix) {
-                state.pctAnnualMix = parseInt(rangeAnnualMix.value, 10);
-            }
-            calculateAndRender();
-        }
-
-        function handleRangeChange(source) {
-            const rangeAgency = document.getElementById('rangeAgency');
-            const rangeChallenge = document.getElementById('rangeChallenge');
-            if (!rangeAgency || !rangeChallenge) return;
-
-            const valAgency = parseFloat(rangeAgency.value);
-            const valChallenge = parseFloat(rangeChallenge.value);
-            
-            const total = valAgency + valChallenge;
-            
-            if (total > 65) { // Empêcher l'agence et le challenge de dépasser 65% pour sécuriser un minimum de marge
-                const overValue = total - 65;
-                if (source === 'Agency') rangeAgency.value = valAgency - overValue;
-                else if (source === 'Challenge') rangeChallenge.value = valChallenge - overValue;
-            }
-
-            state.pctAgency = parseFloat(rangeAgency.value);
-            state.pctChallenge = parseFloat(rangeChallenge.value);
-
-            updateSlidersUI();
-            calculateAndRender();
-        }
-
+        // Met à jour les sliders sur la gauche
         function updateSlidersUI() {
-            const labelAgency = document.getElementById('labelAgency');
-            if (labelAgency) labelAgency.innerText = state.pctAgency + '%';
+            document.getElementById('rangeChurnMensuel').value = state.churnRateMensuel;
+            document.getElementById('labelChurnMensuel').innerText = state.churnRateMensuel.toFixed(1) + '%';
+            
+            document.getElementById('rangeChurnAnnuel').value = state.churnRateAnnuel;
+            document.getElementById('labelChurnAnnuel').innerText = state.churnRateAnnuel.toFixed(1) + '%';
 
-            const labelChallenge = document.getElementById('labelChallenge');
-            if (labelChallenge) labelChallenge.innerText = state.pctChallenge + '%';
+            document.getElementById('badgeAttrition').innerHTML = `<i class="fa-solid fa-circle text-[8px] mr-1.5 animate-pulse"></i> Modèle récurrent (Upfront Trésorerie) | Churn Mensuel : ${state.churnRateMensuel.toFixed(1)}% | Churn Annuel : ${state.churnRateAnnuel.toFixed(1)}%`;
 
-            // Pour l'interface d'enveloppe à gauche, on affiche la structure avec le taux de commission d'excellence (35%)
-            const totalInvested = state.pctAgency + 35 + state.pctChallenge; 
-            const remaining = Math.max(0, 100 - totalInvested);
+            document.getElementById('rangeAgency').value = state.pctAgency;
+            document.getElementById('labelAgency').innerText = state.pctAgency + '%';
 
-            const badgeTotalInvested = document.getElementById('badgeTotalInvested');
-            if (badgeTotalInvested) badgeTotalInvested.innerText = 'Commissions Max : ' + totalInvested + '%';
+            document.getElementById('rangeChallenge').value = state.pctChallenge;
+            document.getElementById('labelChallenge').innerText = state.pctChallenge + '%';
 
-            const pctRemaining = document.getElementById('pctRemaining');
-            if (pctRemaining) pctRemaining.innerText = remaining + '%';
-
-            const barAgency = document.getElementById('barAgency');
-            if (barAgency) barAgency.style.width = state.pctAgency + '%';
-
-            const barRep = document.getElementById('barRep');
-            if (barRep) barRep.style.width = '35%';
-
-            const barChallenge = document.getElementById('barChallenge');
-            if (barChallenge) barChallenge.style.width = state.pctChallenge + '%';
-
-            const barRemaining = document.getElementById('barRemaining');
-            if (barRemaining) barRemaining.style.width = remaining + '%';
-
-            const thAgency = document.getElementById('thAgency');
-            if (thAgency) thAgency.innerText = `Agence (${state.pctAgency}%)`;
-
-            const thChallenge = document.getElementById('thChallenge');
-            if (thChallenge) thChallenge.innerText = `Chal. (${state.pctChallenge}%)`;
+            updatePlatformMarginBar();
         }
 
+        // Met à jour l'indicateur visuel de marge plateforme en fonction de la répartition
+        function updatePlatformMarginBar() {
+            // On suppose par défaut le cas d'une commission commerciale à taux d'excellence maximal (35%)
+            const maxRepCommission = 35; 
+            const remainingPct = Math.max(0, 100 - state.pctAgency - maxRepCommission - state.pctChallenge);
+
+            document.getElementById('pctRemaining').innerText = remainingPct + '%';
+            document.getElementById('barAgency').style.width = state.pctAgency + '%';
+            document.getElementById('barRep').style.width = maxRepCommission + '%';
+            document.getElementById('barChallenge').style.width = state.pctChallenge + '%';
+            document.getElementById('barRemaining').style.width = remainingPct + '%';
+        }
+
+        // Changement de type de croissance (Constant, Linéaire, Exponentiel)
         function setGrowthType(type) {
             state.growthType = type;
             
-            const btnConstant = document.getElementById('btnGrowthConstant');
-            const btnLinear = document.getElementById('btnGrowthLinear');
-            const btnExponential = document.getElementById('btnGrowthExponential');
-            const containerFactor = document.getElementById('containerGrowthFactor');
-            const labelGrowth = document.getElementById('labelGrowthFactor');
-            const unitGrowth = document.getElementById('unitGrowthFactor');
+            // Ajustement des boutons actifs
+            const buttons = {
+                constant: document.getElementById('btnGrowthConstant'),
+                linear: document.getElementById('btnGrowthLinear'),
+                exponential: document.getElementById('btnGrowthExponential')
+            };
 
-            [btnConstant, btnLinear, btnExponential].forEach(btn => {
-                if (btn) {
-                    btn.className = "py-2 px-1 text-center rounded-lg border text-xs font-semibold transition-all border-slate-200 bg-white text-slate-700 hover:bg-slate-50";
+            Object.keys(buttons).forEach(key => {
+                if (key === type) {
+                    buttons[key].className = "py-2 px-1 text-center rounded-lg border text-xs font-bold bg-indigo-600 text-white border-indigo-600 shadow-sm";
+                } else {
+                    buttons[key].className = "py-2 px-1 text-center rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 bg-white hover:bg-slate-50 hover:text-indigo-600 transition-all";
                 }
             });
 
+            // Ajustement des champs de croissance
+            const factorContainer = document.getElementById('containerGrowthFactor');
+            const factorLabel = document.getElementById('labelGrowthFactor');
+            const factorInput = document.getElementById('inputGrowthFactor');
+            const factorUnit = document.getElementById('unitGrowthFactor');
+
             if (type === 'constant') {
-                if (btnConstant) btnConstant.className = "py-2 px-1 text-center rounded-lg border text-xs font-bold transition-all border-indigo-200 bg-indigo-50 text-indigo-700";
-                if (containerFactor) containerFactor.classList.add('hidden');
-            } else if (type === 'linear') {
-                if (btnLinear) btnLinear.className = "py-2 px-1 text-center rounded-lg border text-xs font-bold transition-all border-indigo-200 bg-indigo-50 text-indigo-700";
-                if (containerFactor) containerFactor.classList.remove('hidden');
-                if (labelGrowth) labelGrowth.innerText = "Ajout de clients/mois";
-                if (unitGrowth) unitGrowth.innerText = "clients/m";
-            } else if (type === 'exponential') {
-                if (btnExponential) btnExponential.className = "py-2 px-1 text-center rounded-lg border text-xs font-bold transition-all border-indigo-200 bg-indigo-50 text-indigo-700";
-                if (containerFactor) containerFactor.classList.remove('hidden');
-                if (labelGrowth) labelGrowth.innerText = "Taux de croissance (%)";
-                if (unitGrowth) unitGrowth.innerText = "%/m";
+                factorContainer.classList.add('hidden');
+            } else {
+                factorContainer.classList.remove('hidden');
+                if (type === 'linear') {
+                    factorLabel.innerText = "Croissance mensuelle d'acquisition";
+                    factorInput.value = 1;
+                    factorUnit.innerText = "ventes/m";
+                } else {
+                    factorLabel.innerText = "Taux de croissance mensuel (%)";
+                    factorInput.value = 5;
+                    factorUnit.innerText = "%";
+                }
             }
 
             generateSales();
         }
 
+        // Génération automatique des nouvelles ventes selon la règle choisie
         function generateSales() {
-            const inputStartSales = document.getElementById('inputStartSales');
-            const inputGrowthFactor = document.getElementById('inputGrowthFactor');
-            if (inputStartSales) {
-                state.startSales = Math.max(0, parseFloat(inputStartSales.value) || 0);
-            }
-            if (inputGrowthFactor) {
-                state.growthFactor = Math.max(0, parseFloat(inputGrowthFactor.value) || 0);
-            }
-
-            for (let m = 0; m < 36; m++) {
-                if (state.growthType === 'constant') {
-                    state.monthlyNewSales[m] = Math.round(state.startSales);
-                } else if (state.growthType === 'linear') {
-                    state.monthlyNewSales[m] = Math.round(state.startSales + (state.growthFactor * m));
-                } else if (state.growthType === 'exponential') {
-                    state.monthlyNewSales[m] = Math.round(state.startSales * Math.pow(1 + (state.growthFactor / 100), m));
-                }
-            }
-            calculateAndRender();
-        }
-
-        function handleParamChange() {
-            const inputMonthlyPrice = document.getElementById('inputMonthlyPrice');
-            const inputAnnualPrice = document.getElementById('inputAnnualPrice');
-            const inputRepsCount = document.getElementById('inputRepsCount');
-
-            if (inputMonthlyPrice) {
-                state.monthlyPrice = Math.max(0, parseFloat(inputMonthlyPrice.value) || 0);
-            }
-            if (inputAnnualPrice) {
-                state.annualPrice = Math.max(0, parseFloat(inputAnnualPrice.value) || 0);
-            }
-            if (inputRepsCount) {
-                state.repsCount = Math.max(1, parseInt(inputRepsCount.value, 10) || 1);
-            }
-            calculateAndRender();
-        }
-
-        function handleManualSalesChange(monthIndex, value) {
-            state.monthlyNewSales[monthIndex] = Math.max(0, parseInt(value, 10) || 0);
-            calculateAndRender();
-        }
-
-        function calculateAndRender() {
-            // Mise à jour de l'affichage du mix
-            const labelAnnualMix = document.getElementById('labelAnnualMix');
-            if (labelAnnualMix) labelAnnualMix.innerText = state.pctAnnualMix + "%";
-
-            // Calcul du prix unitaire équivalent MRR moyen (Abonnement Mensuel et Annuel ramené à 12 mois)
-            const annualMonthlyEquivalent = state.annualPrice / 12;
-            const weightedUnitPrice = (state.monthlyPrice * (100 - state.pctAnnualMix) + annualMonthlyEquivalent * state.pctAnnualMix) / 100;
-
-            const labelWeightedPrice = document.getElementById('labelWeightedPrice');
-            if (labelWeightedPrice) {
-                labelWeightedPrice.innerText = `${weightedUnitPrice.toFixed(2)} € HT / mois`;
-            }
-
-            const data = [];
+            const startMensuel = parseFloat(document.getElementById('inputStartSalesMensuel').value) || 0;
+            const startAnnuel = parseFloat(document.getElementById('inputStartSalesAnnuel').value) || 0;
+            const factor = parseFloat(document.getElementById('inputGrowthFactor').value) || 0;
             
-            let totalCumulativeAgency = 0;
-            let totalCumulativeRep = 0;
-            let totalCumulativeChallenge = 0;
-            let totalCumulativeRemaining = 0;
-            let totalCumulativeRevenue = 0;
+            state.startSalesMensuel = startMensuel;
+            state.startSalesAnnuel = startAnnuel;
+            state.growthFactor = factor;
 
-            let activeCustomers = 0;
-
-            for (let m = 0; m < 36; m++) {
-                const newAcquisitionsPerRep = state.monthlyNewSales[m];
-                const teamNewAcquisitions = newAcquisitionsPerRep * state.repsCount;
-                
-                // Règle du Quota d'Activation (OmniViZi) :
-                // Moins de 8 ventes/mois (<2/sem) : 20% commission portefeuille
-                // De 8 à 15 ventes/mois (2 à 4/sem) : 30% commission portefeuille
-                // 16 ventes/mois et plus (>=4/sem) : 35% commission portefeuille
-                let appliedRepRate = 35;
-                let quotaBadgeText = "Excellence";
-                let quotaBadgeColorClass = "bg-emerald-100 text-emerald-800 border-emerald-200";
-
-                if (newAcquisitionsPerRep < 8) {
-                    appliedRepRate = 20;
-                    quotaBadgeText = "Alerte";
-                    quotaBadgeColorClass = "bg-red-100 text-red-800 border-red-200";
-                } else if (newAcquisitionsPerRep < 16) {
-                    appliedRepRate = 30;
-                    quotaBadgeText = "Maintien";
-                    quotaBadgeColorClass = "bg-amber-100 text-amber-800 border-amber-200";
-                }
-                
-                if (m > 0) {
-                    activeCustomers = activeCustomers * (1 - state.churnRate / 100);
-                }
-                
-                activeCustomers += teamNewAcquisitions;
-                const monthlyRevenue = activeCustomers * weightedUnitPrice;
-
-                const agencyShare = (monthlyRevenue * state.pctAgency) / 100;
-                const repShare = (monthlyRevenue * appliedRepRate) / 100;
-                const challengeShare = (monthlyRevenue * state.pctChallenge) / 100;
-
-                // La part restante plateforme se protège dynamiquement si le taux de commission des commerciaux diminue !
-                const remainingPct = Math.max(0, 100 - (state.pctAgency + appliedRepRate + state.pctChallenge));
-                const remainingShare = (monthlyRevenue * remainingPct) / 100;
-
-                totalCumulativeRevenue += monthlyRevenue;
-                totalCumulativeAgency += agencyShare;
-                totalCumulativeRep += repShare;
-                totalCumulativeChallenge += challengeShare;
-                totalCumulativeRemaining += remainingShare;
-
-                data.push({
-                    month: m + 1,
-                    newAcquisitions: newAcquisitionsPerRep,
-                    quotaBadgeText,
-                    quotaBadgeColorClass,
-                    appliedRepRate,
-                    activeCustomers: Math.round(activeCustomers * 10) / 10,
-                    monthlyRevenue,
-                    agencyShare,
-                    repShare,
-                    challengeShare,
-                    remainingShare,
-                    remainingPct,
-                    
-                    cumulativeRevenue: totalCumulativeRevenue,
-                    cumulativeAgency: totalCumulativeAgency,
-                    cumulativeRep: totalCumulativeRep,
-                    cumulativeChallenge: totalCumulativeChallenge,
-                    cumulativeRemaining: totalCumulativeRemaining
-                });
-            }
-
-            // Sommation par exercice annuel
-            let y1AgencyTotal = 0, y1RepTotal = 0, y1MRRVal = data[11].monthlyRevenue;
-            let y2AgencyTotal = 0, y2RepTotal = 0, y2MRRVal = data[23].monthlyRevenue;
-            let y3AgencyTotal = 0, y3RepTotal = 0, y3MRRVal = data[35].monthlyRevenue;
-
-            for (let i = 0; i < 12; i++) { y1AgencyTotal += data[i].agencyShare; y1RepTotal += data[i].repShare; }
-            for (let i = 12; i < 24; i++) { y2AgencyTotal += data[i].agencyShare; y2RepTotal += data[i].repShare; }
-            for (let i = 24; i < 36; i++) { y3AgencyTotal += data[i].agencyShare; y3RepTotal += data[i].repShare; }
-
-            const y1AgencyAvg = y1AgencyTotal / 12; const y1RepAvg = y1RepTotal / 12;
-            const y2AgencyAvg = y2AgencyTotal / 12; const y2RepAvg = y2RepTotal / 12;
-            const y3AgencyAvg = y3AgencyTotal / 12; const y3RepAvg = y3RepTotal / 12;
-
-            // Rendu DOM Année 1
-            const y1MRR = document.getElementById('y1MRR');
-            if (y1MRR) y1MRR.innerText = `Fin d'année : ${Math.round(y1MRRVal).toLocaleString('fr-FR')} € MRR`;
-
-            const y1AgencyTotalEl = document.getElementById('y1AgencyTotal');
-            if (y1AgencyTotalEl) y1AgencyTotalEl.innerText = y1AgencyTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
-
-            const y1AgencyAvgEl = document.getElementById('y1AgencyAvg');
-            if (y1AgencyAvgEl) y1AgencyAvgEl.innerText = `Moy. ${Math.round(y1AgencyAvg).toLocaleString('fr-FR')} €/m`;
-
-            const y1RepTotalEl = document.getElementById('y1RepTotal');
-            if (y1RepTotalEl) y1RepTotalEl.innerText = y1RepTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
-
-            const y1RepAvgEl = document.getElementById('y1RepAvg');
-            if (y1RepAvgEl) y1RepAvgEl.innerText = `Moy. ${Math.round(y1RepAvg).toLocaleString('fr-FR')} €/m`;
-
-            const y1RepAvgIndiv = document.getElementById('y1RepAvgIndiv');
-            if (y1RepAvgIndiv) {
-                if (state.repsCount > 1) {
-                    y1RepAvgIndiv.innerText = `~${Math.round(y1RepAvg / state.repsCount).toLocaleString('fr-FR')} €/m par comm.`;
-                    y1RepAvgIndiv.classList.remove('hidden');
-                } else { 
-                    y1RepAvgIndiv.classList.add('hidden'); 
+            for (let i = 0; i < 36; i++) {
+                if (state.growthType === 'constant') {
+                    state.monthlyNewSalesMensuel[i] = startMensuel;
+                    state.monthlyNewSalesAnnuel[i] = startAnnuel;
+                } else if (state.growthType === 'linear') {
+                    state.monthlyNewSalesMensuel[i] = Math.max(0, Math.round(startMensuel + (i * (factor / 2))));
+                    state.monthlyNewSalesAnnuel[i] = Math.max(0, Math.round(startAnnuel + (i * (factor / 2))));
+                } else if (state.growthType === 'exponential') {
+                    state.monthlyNewSalesMensuel[i] = Math.max(0, Math.round(startMensuel * Math.pow(1 + (factor / 100), i)));
+                    state.monthlyNewSalesAnnuel[i] = Math.max(0, Math.round(startAnnuel * Math.pow(1 + (factor / 100), i)));
                 }
             }
 
-            // Rendu DOM Année 2
-            const y2MRR = document.getElementById('y2MRR');
-            if (y2MRR) y2MRR.innerText = `Fin d'année : ${Math.round(y2MRRVal).toLocaleString('fr-FR')} € MRR`;
-
-            const y2AgencyTotalEl = document.getElementById('y2AgencyTotal');
-            if (y2AgencyTotalEl) y2AgencyTotalEl.innerText = y2AgencyTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
-
-            const y2AgencyAvgEl = document.getElementById('y2AgencyAvg');
-            if (y2AgencyAvgEl) y2AgencyAvgEl.innerText = `Moy. ${Math.round(y2AgencyAvg).toLocaleString('fr-FR')} €/m`;
-
-            const y2RepTotalEl = document.getElementById('y2RepTotal');
-            if (y2RepTotalEl) y2RepTotalEl.innerText = y2RepTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
-
-            const y2RepAvgEl = document.getElementById('y2RepAvg');
-            if (y2RepAvgEl) y2RepAvgEl.innerText = `Moy. ${Math.round(y2RepAvg).toLocaleString('fr-FR')} €/m`;
-
-            const y2RepAvgIndiv = document.getElementById('y2RepAvgIndiv');
-            if (y2RepAvgIndiv) {
-                if (state.repsCount > 1) {
-                    y2RepAvgIndiv.innerText = `~${Math.round(y2RepAvg / state.repsCount).toLocaleString('fr-FR')} €/m par comm.`;
-                    y2RepAvgIndiv.classList.remove('hidden');
-                } else { 
-                    y2RepAvgIndiv.classList.add('hidden'); 
-                }
-            }
-
-            // Rendu DOM Année 3
-            const y3MRR = document.getElementById('y3MRR');
-            if (y3MRR) y3MRR.innerText = `Fin d'année : ${Math.round(y3MRRVal).toLocaleString('fr-FR')} € MRR`;
-
-            const y3AgencyTotalEl = document.getElementById('y3AgencyTotal');
-            if (y3AgencyTotalEl) y3AgencyTotalEl.innerText = y3AgencyTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
-
-            const y3AgencyAvgEl = document.getElementById('y3AgencyAvg');
-            if (y3AgencyAvgEl) y3AgencyAvgEl.innerText = `Moy. ${Math.round(y3AgencyAvg).toLocaleString('fr-FR')} €/m`;
-
-            const y3RepTotalEl = document.getElementById('y3RepTotal');
-            if (y3RepTotalEl) y3RepTotalEl.innerText = y3RepTotal.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
-
-            const y3RepAvgEl = document.getElementById('y3RepAvg');
-            if (y3RepAvgEl) y3RepAvgEl.innerText = `Moy. ${Math.round(y3RepAvg).toLocaleString('fr-FR')} €/m`;
-
-            const y3RepAvgIndiv = document.getElementById('y3RepAvgIndiv');
-            if (y3RepAvgIndiv) {
-                if (state.repsCount > 1) {
-                    y3RepAvgIndiv.innerText = `~${Math.round(y3RepAvg / state.repsCount).toLocaleString('fr-FR')} €/m par comm.`;
-                    y3RepAvgIndiv.classList.remove('hidden');
-                } else { 
-                    y3RepAvgIndiv.classList.add('hidden'); 
-                }
-            }
-
-            renderTable(data);
-            renderCharts(data);
+            calculateAndRender();
         }
 
-        function renderTable(data) {
+        // Calcule le taux de commission dynamique basé sur le volume de nouvelles ventes totales du mois par commercial
+        function getRepCommissionRate(salesPerRep) {
+            if (salesPerRep < 8) {
+                return 20; // < 8 ventes : 20%
+            } else if (salesPerRep <= 15) {
+                return 30; // 8 à 15 ventes : 30%
+            } else {
+                return 35; // 16+ ventes : 35%
+            }
+        }
+
+        // Gère les modifications manuelles de cellules du tableau
+        function handleCellEdit(monthIndex, type, value) {
+            const numVal = Math.max(0, parseInt(value) || 0);
+            if (type === 'mensuel') {
+                state.monthlyNewSalesMensuel[monthIndex] = numVal;
+            } else if (type === 'annuel') {
+                state.monthlyNewSalesAnnuel[monthIndex] = numVal;
+            }
+            calculateAndRender();
+        }
+
+        // Gère les modifications des hypothèses de tarification/commerciaux dans l'UI
+        function handleParamChange() {
+            state.monthlyPrice = parseFloat(document.getElementById('inputMonthlyPrice').value) || 0;
+            state.annualPrice = parseFloat(document.getElementById('inputAnnualPrice').value) || 0;
+            state.repsCount = Math.max(1, parseInt(document.getElementById('inputRepsCount').value) || 1);
+            
+            updatePlatformMarginBar();
+            calculateAndRender();
+        }
+
+        // Gère les modifications de Churn
+        function handleChurnMensuelChange() {
+            state.churnRateMensuel = parseFloat(document.getElementById('rangeChurnMensuel').value);
+            updateSlidersUI();
+            calculateAndRender();
+        }
+
+        function handleChurnAnnuelChange() {
+            state.churnRateAnnuel = parseFloat(document.getElementById('rangeChurnAnnuel').value);
+            updateSlidersUI();
+            calculateAndRender();
+        }
+
+        // Mettre à jour l'alignement des curseurs agence / challenge
+        function handleRangeChange(type) {
+            if (type === 'Agency') {
+                state.pctAgency = parseInt(document.getElementById('rangeAgency').value);
+            } else if (type === 'Challenge') {
+                state.pctChallenge = parseInt(document.getElementById('rangeChallenge').value);
+            }
+            updateSlidersUI();
+            calculateAndRender();
+        }
+
+        // Bascule de type de graphique (Cumulé / Mensuel)
+        function toggleChartType(type) {
+            state.chartType = type;
+            const btnCumulative = document.getElementById('btnChartCumulative');
+            const btnMonthly = document.getElementById('btnChartMonthly');
+
+            if (type === 'cumulative') {
+                btnCumulative.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-sm";
+                btnMonthly.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-indigo-600";
+            } else {
+                btnMonthly.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-sm";
+                btnCumulative.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-indigo-600";
+            }
+            renderChart();
+        }
+
+        // Réinitialiser les paramètres
+        function resetToDefaults() {
+            state.monthlyPrice = 99;
+            state.annualPrice = 990;
+            state.pctAgency = 10;
+            state.pctChallenge = 5;
+            state.churnRateMensuel = 5.0;
+            state.churnRateAnnuel = 2.0;
+            state.repsCount = 5;
+            state.presentationMode = true;
+            state.growthType = 'constant';
+            state.startSalesMensuel = 12;
+            state.startSalesAnnuel = 4;
+            state.growthFactor = 5;
+
+            document.getElementById('inputMonthlyPrice').value = 99;
+            document.getElementById('inputAnnualPrice').value = 990;
+            document.getElementById('inputRepsCount').value = 5;
+            document.getElementById('inputStartSalesMensuel').value = 12;
+            document.getElementById('inputStartSalesAnnuel').value = 4;
+            document.getElementById('inputGrowthFactor').value = 5;
+
+            setGrowthType('constant');
+            applyPresentationMode();
+            updateSlidersUI();
+            calculateAndRender();
+        }
+
+        // Données globales calculées pour le graphique et l'export
+        let finalCalculationData = [];
+
+        // Fonction principale de calcul mathématique et d'actualisation de l'affichage
+        function calculateAndRender() {
             const tableBody = document.getElementById('tableBody');
-            if (!tableBody) return;
             tableBody.innerHTML = '';
 
-            data.forEach((row, index) => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50/80 transition-colors border-b border-slate-100";
-                
-                const remainingCell = state.presentationMode ? '' : `
-                    <td class="px-3 py-2 font-bold text-emerald-600 bg-emerald-50/25">${row.remainingShare.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })} <span class="text-[9px] font-normal text-slate-400">(${row.remainingPct}%)</span></td>
-                `;
+            const reps = state.repsCount;
+            const churnMensuel = state.churnRateMensuel / 100;
+            const churnAnnuel = state.churnRateAnnuel / 100;
 
-                // Intitule d'en-tête dynamique du taux pour le commercial
-                const thRep = document.getElementById('thRep');
-                if (thRep) thRep.innerText = `Comm. (Dynamique)`;
+            let activeMonthlyClients = 0; 
+            
+            // On conserve un historique mensuel des cohortes d'offres annuelles vendues ou renouvelées
+            let annualCohortsActive = Array(36).fill(0);
+
+            // Variables pour cumul annuel (généré pour le bilan d'activité)
+            let y1AgencySum = 0, y1RepSum = 0;
+            let y2AgencySum = 0, y2RepSum = 0;
+            let y3AgencySum = 0, y3RepSum = 0;
+            let y1EndValue = 0, y2EndValue = 0, y3EndValue = 0;
+
+            finalCalculationData = [];
+
+            for (let m = 0; m < 36; m++) {
+                const newSalesMensuel = state.monthlyNewSalesMensuel[m];
+                const newSalesAnnuel = state.monthlyNewSalesAnnuel[m];
                 
-                const thRemaining = document.getElementById('thRemaining');
-                if (!state.presentationMode && thRemaining) {
-                    thRemaining.innerText = `Plateforme, R&D & Support`;
+                // Le volume d'acquisition total par commercial (qui régit l'atteinte des Quotas)
+                const totalNewSalesPerRep = newSalesMensuel + newSalesAnnuel;
+                const totalNewMensuelsTeam = newSalesMensuel * reps;
+                const totalNewAnnuelsTeam = newSalesAnnuel * reps;
+
+                // --- 1. GESTION DES ABONNÉS ACTIFS MENSUELS ---
+                // Le portefeuille d'actifs mensuels subit son propre Churn indépendant, puis accueille les nouveaux
+                activeMonthlyClients = (activeMonthlyClients * (1 - churnMensuel)) + totalNewMensuelsTeam;
+
+                // --- 2. GESTION DES ABONNÉS ACTIFS ANNUELS ET RENOUVELLEMENTS (VISION TRÉSORERIE) ---
+                // Les nouveaux contrats annuels signés ce mois-ci sont payés upfront
+                const cashNewAnnualContracts = totalNewAnnuelsTeam * state.annualPrice;
+                annualCohortsActive[m] = totalNewAnnuelsTeam;
+
+                // Les renouvellements annuels (au bout de 12 mois)
+                let cashRenewingAnnualContracts = 0;
+                let renewedCohortY2 = 0;
+                let renewedCohortY3 = 0;
+
+                // Renouvellements de l'Année 2 (lookback 12 mois sur les nouveaux contrats du mois m-12)
+                if (m >= 12) {
+                    // On applique le churn annuel cumulé (équivalent à 12 mois d'attrition) sur la cohorte d'origine
+                    renewedCohortY2 = annualCohortsActive[m - 12] * Math.pow(1 - churnAnnuel, 12);
+                    cashRenewingAnnualContracts += renewedCohortY2 * state.annualPrice;
+                    // On met à jour l'historique de la cohorte à sa nouvelle valeur renouvelée
+                    annualCohortsActive[m] += renewedCohortY2;
+                }
+                // Renouvellements de l'Année 3 (lookback 24 mois sur les contrats initiaux du mois m-24)
+                if (m >= 24) {
+                    renewedCohortY3 = annualCohortsActive[m - 24] * Math.pow(1 - churnAnnuel, 24);
+                    cashRenewingAnnualContracts += renewedCohortY3 * state.annualPrice;
+                    annualCohortsActive[m] += renewedCohortY3;
                 }
 
+                // Encaissement Global (Trésorerie Upfront réelle)
+                const currentMonthRevenue = (activeMonthlyClients * state.monthlyPrice) + cashNewAnnualContracts + cashRenewingAnnualContracts;
+
+                // --- Calcul du volume d'actifs global sous contrat actif au cours de ce mois ---
+                // Pour estimer le nombre total de clients actifs sous contrat, on cumule :
+                // Les abonnés mensuels + les cohortes d'annuels acquises ou renouvelées au cours des 12 derniers mois
+                let totalActiveAnnualsUnderContract = 0;
+                for (let i = Math.max(0, m - 11); i <= m; i++) {
+                    // Chaque cohorte 'i' a vieilli de (m - i) mois et a subi le churn annuel correspondant
+                    const cohortSales = (state.monthlyNewSalesAnnuel[i] * reps);
+                    totalActiveAnnualsUnderContract += cohortSales * Math.pow(1 - churnAnnuel, m - i);
+                }
+                const totalActivePortfoliio = Math.round(activeMonthlyClients + totalActiveAnnualsUnderContract);
+
+                // --- 3. REPARTITIONS DES REVENUS ET COMMISSIONS ---
+                const repCommRate = getRepCommissionRate(totalNewSalesPerRep);
+                const agencyCut = currentMonthRevenue * (state.pctAgency / 100);
+                const repCut = currentMonthRevenue * (repCommRate / 100);
+                const challengeCut = currentMonthRevenue * (state.pctChallenge / 100);
+                const remainingCut = Math.max(0, currentMonthRevenue - agencyCut - repCut - challengeCut);
+
+                // Sauvegarde
+                finalCalculationData.push({
+                    month: m + 1,
+                    newSalesMensuel,
+                    newSalesAnnuel,
+                    totalNewSalesPerRep,
+                    activeClients: totalActivePortfoliio,
+                    mrr: currentMonthRevenue, // Représente la trésorerie brute encaissée
+                    repCommRate,
+                    agencyCut,
+                    repCut,
+                    challengeCut,
+                    remainingCut
+                });
+
+                // Agrégats Annuels
+                if (m < 12) {
+                    y1AgencySum += agencyCut;
+                    y1RepSum += repCut;
+                    if (m === 11) y1EndValue = currentMonthRevenue;
+                } else if (m < 24) {
+                    y2AgencySum += agencyCut;
+                    y2RepSum += repCut;
+                    if (m === 23) y2EndValue = currentMonthRevenue;
+                } else {
+                    y3AgencySum += agencyCut;
+                    y3RepSum += repCut;
+                    if (m === 35) y3EndValue = currentMonthRevenue;
+                }
+
+                // Affichage dans le tableau
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-slate-50 transition-colors border-b border-slate-100";
+
+                let quotaBadgeClass = "bg-emerald-50 text-emerald-700 border-emerald-100";
+                let quotaIcon = "fa-trophy";
+                if (totalNewSalesPerRep < 8) {
+                    quotaBadgeClass = "bg-red-50 text-red-700 border-red-100";
+                    quotaIcon = "fa-triangle-exclamation";
+                } else if (totalNewSalesPerRep <= 15) {
+                    quotaBadgeClass = "bg-amber-50 text-amber-700 border-amber-100";
+                    quotaIcon = "fa-clock-rotate-left";
+                }
+
+                const formatEuro = (val) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(val);
+
+                const mrrCell = state.presentationMode ? '' : `<td class="px-3 py-3 font-medium text-slate-900">${formatEuro(currentMonthRevenue)}</td>`;
+                const remainingCell = state.presentationMode ? '' : `<td class="px-3 py-3 text-emerald-700 bg-emerald-50/20 font-medium">${formatEuro(remainingCut)}</td>`;
+
                 tr.innerHTML = `
-                    <td class="px-3 py-2 text-center font-bold text-slate-500 border-r border-slate-100">${row.month}</td>
-                    <td class="px-2 py-1 bg-slate-100/50">
-                        <input type="number" value="${row.newAcquisitions}" min="0" 
-                            onchange="handleManualSalesChange(${index}, this.value)"
-                            class="w-full text-center bg-transparent focus:bg-white focus:ring-1 focus:ring-indigo-500 focus:outline-none border border-transparent hover:border-slate-300 focus:border-indigo-500 rounded py-1 px-1 font-bold text-slate-900 transition-all">
+                    <td class="px-3 py-3 font-bold text-slate-500 text-center">${m + 1}</td>
+                    <td class="px-2 py-2 bg-slate-50 text-center">
+                        <input type="number" value="${newSalesMensuel}" min="0" oninput="handleCellEdit(${m}, 'mensuel', this.value)" class="w-14 px-1.5 py-1 border border-slate-300 rounded text-center font-bold text-slate-800 bg-white focus:ring-1 focus:ring-indigo-500">
                     </td>
-                    <td class="px-2 py-1 text-center">
-                        <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${row.quotaBadgeColorClass}">
-                            ${row.quotaBadgeText} (${row.appliedRepRate}%)
+                    <td class="px-2 py-2 bg-indigo-50/20 text-center">
+                        <input type="number" value="${newSalesAnnuel}" min="0" oninput="handleCellEdit(${m}, 'annuel', this.value)" class="w-14 px-1.5 py-1 border border-indigo-200 rounded text-center font-bold text-indigo-900 bg-white focus:ring-1 focus:ring-indigo-500">
+                    </td>
+                    <td class="px-3 py-3 text-center">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold border ${quotaBadgeClass}" title="${totalNewSalesPerRep} ventes au total">
+                            <i class="fa-solid ${quotaIcon} mr-1"></i> ${repCommRate}%
                         </span>
                     </td>
-                    <td class="px-3 py-2 font-semibold text-slate-800 text-center bg-slate-50/50">${Math.round(row.activeCustomers).toLocaleString('fr-FR')}</td>
-                    <td class="px-3 py-2 font-bold text-slate-900">${row.monthlyRevenue.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}</td>
-                    <td class="px-3 py-2 font-semibold text-red-600">${row.agencyShare.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}</td>
-                    <td class="px-3 py-2 font-bold text-violet-700 bg-violet-50/30">${row.repShare.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}</td>
-                    <td class="px-3 py-2 font-semibold text-amber-600">${row.challengeShare.toLocaleString('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 })}</td>
+                    <td class="px-3 py-3 font-bold text-center text-slate-700">${totalActivePortfoliio}</td>
+                    ${mrrCell}
+                    <td class="px-3 py-3 text-red-700 font-medium">${formatEuro(agencyCut)}</td>
+                    <td class="px-3 py-3 text-violet-700 font-bold">${formatEuro(repCut)}</td>
+                    <td class="px-3 py-3 text-amber-700 font-medium">${formatEuro(challengeCut)}</td>
                     ${remainingCell}
                 `;
                 tableBody.appendChild(tr);
-            });
-        }
-
-        function toggleChartType(type) {
-            state.chartType = type;
-            const btnCumul = document.getElementById('btnChartCumulative');
-            const btnMonth = document.getElementById('btnChartMonthly');
-
-            if (type === 'cumulative') {
-                if (btnCumul) btnCumul.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-sm";
-                if (btnMonth) btnMonth.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900";
-            } else {
-                if (btnMonth) btnMonth.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all bg-white text-slate-900 shadow-sm";
-                if (btnCumul) btnCumul.className = "px-3 py-1.5 rounded-lg text-xs font-bold transition-all text-slate-600 hover:text-slate-900";
             }
 
-            calculateAndRender();
+            // Actualisation des Bilans Annuels
+            const formatShortEuro = (val) => new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(val);
+            
+            // Année 1
+            document.getElementById('y1MRR').innerText = `Encaissements fin an 1 : ${formatShortEuro(y1EndValue)}`;
+            document.getElementById('y1AgencyTotal').innerText = formatShortEuro(y1AgencySum);
+            document.getElementById('y1AgencyAvg').innerText = `Moy. ${formatShortEuro(y1AgencySum / 12)}/m`;
+            document.getElementById('y1RepTotal').innerText = formatShortEuro(y1RepSum);
+            document.getElementById('y1RepAvg').innerText = `Moy. ${formatShortEuro(y1RepSum / 12)}/m`;
+            document.getElementById('y1RepAvgIndiv').innerText = `~ ${formatShortEuro((y1RepSum / 12) / reps)} / m par commercial`;
+
+            // Année 2
+            document.getElementById('y2MRR').innerText = `Encaissements fin an 2 : ${formatShortEuro(y2EndValue)}`;
+            document.getElementById('y2AgencyTotal').innerText = formatShortEuro(y2AgencySum);
+            document.getElementById('y2AgencyAvg').innerText = `Moy. ${formatShortEuro(y2AgencySum / 12)}/m`;
+            document.getElementById('y2RepTotal').innerText = formatShortEuro(y2RepSum);
+            document.getElementById('y2RepAvg').innerText = `Moy. ${formatShortEuro(y2RepSum / 12)}/m`;
+            document.getElementById('y2RepAvgIndiv').innerText = `~ ${formatShortEuro((y2RepSum / 12) / reps)} / m par commercial`;
+
+            // Année 3
+            document.getElementById('y3MRR').innerText = `Encaissements fin an 3 : ${formatShortEuro(y3EndValue)}`;
+            document.getElementById('y3AgencyTotal').innerText = formatShortEuro(y3AgencySum);
+            document.getElementById('y3AgencyAvg').innerText = `Moy. ${formatShortEuro(y3AgencySum / 12)}/m`;
+            document.getElementById('y3RepTotal').innerText = formatShortEuro(y3RepSum);
+            document.getElementById('y3RepAvg').innerText = `Moy. ${formatShortEuro(y3RepSum / 12)}/m`;
+            document.getElementById('y3RepAvgIndiv').innerText = `~ ${formatShortEuro((y3RepSum / 12) / reps)} / m par commercial`;
+
+            // Tracé du graphique
+            renderChart();
         }
 
-        function renderCharts(data) {
+        // Trace et configure la librairie Chart.js
+        function renderChart() {
             const ctx = document.getElementById('mainChart').getContext('2d');
-            if (chartInstance) chartInstance.destroy();
+            const labels = finalCalculationData.map(d => `Mois ${d.month}`);
+            
+            // Détruire l'ancien graphique avant d'en créer un nouveau
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
 
-            const labels = data.map(d => `Mois ${d.month}`);
-            const isCumulative = state.chartType === 'cumulative';
+            let datasets = [];
+            const repLabel = 'Part Commerciaux (Upfront)';
+            const agencyLabel = 'Part Agence (Encaissée)';
+            const challengeLabel = 'Budget Challenge (Encaissé)';
+            const remainingLabel = 'Marge Plateforme (Encaissée)';
 
-            const datasets = [
-                {
-                    label: 'Part Agence',
-                    data: data.map(d => isCumulative ? d.cumulativeAgency : d.agencyShare),
-                    borderColor: '#ef4444',
-                    backgroundColor: isCumulative ? 'rgba(239, 68, 68, 0.04)' : '#ef4444',
-                    fill: isCumulative,
-                    tension: 0.3,
-                    borderWidth: 2,
-                    type: isCumulative ? 'line' : 'bar'
-                },
-                {
-                    label: 'Part Commerciale (Équipe)',
-                    data: data.map(d => isCumulative ? d.cumulativeRep : d.repShare),
-                    borderColor: '#8b5cf6',
-                    backgroundColor: isCumulative ? 'rgba(139, 92, 246, 0.04)' : '#8b5cf6',
-                    fill: isCumulative,
-                    tension: 0.3,
-                    borderWidth: 2,
-                    type: isCumulative ? 'line' : 'bar'
-                },
-                {
-                    label: 'Budget Challenge',
-                    data: data.map(d => isCumulative ? d.cumulativeChallenge : d.challengeShare),
-                    borderColor: '#f59e0b',
-                    backgroundColor: isCumulative ? 'rgba(245, 158, 11, 0.04)' : '#f59e0b',
-                    fill: isCumulative,
-                    tension: 0.3,
-                    borderWidth: 2,
-                    type: isCumulative ? 'line' : 'bar'
-                }
-            ];
+            if (state.chartType === 'cumulative') {
+                let agencyCum = [], repCum = [], challengeCum = [], remainingCum = [];
+                let agencySum = 0, repSum = 0, challengeSum = 0, remainingSum = 0;
 
-            if (!state.presentationMode) {
-                datasets.push({
-                    label: 'Plateforme, R&D & Support',
-                    data: data.map(d => isCumulative ? d.cumulativeRemaining : d.remainingShare),
-                    borderColor: '#10b981',
-                    backgroundColor: isCumulative ? 'rgba(16, 185, 129, 0.04)' : '#10b981',
-                    fill: isCumulative,
-                    tension: 0.3,
-                    borderWidth: 2,
-                    type: isCumulative ? 'line' : 'bar'
+                finalCalculationData.forEach(d => {
+                    agencySum += d.agencyCut;
+                    repSum += d.repCut;
+                    challengeSum += d.challengeCut;
+                    remainingSum += d.remainingCut;
+
+                    agencyCum.push(Math.round(agencySum));
+                    repCum.push(Math.round(repSum));
+                    challengeCum.push(Math.round(challengeSum));
+                    remainingCum.push(Math.round(remainingSum));
                 });
+
+                datasets = [
+                    {
+                        label: repLabel + ' (Cumulé)',
+                        data: repCum,
+                        borderColor: '#7c3aed',
+                        backgroundColor: 'rgba(124, 58, 237, 0.08)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.25
+                    },
+                    {
+                        label: agencyLabel + ' (Cumulé)',
+                        data: agencyCum,
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.05)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.25
+                    },
+                    {
+                        label: challengeLabel + ' (Cumulé)',
+                        data: challengeCum,
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.03)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.25
+                    }
+                ];
+
+                if (!state.presentationMode) {
+                    datasets.unshift({
+                        label: remainingLabel + ' (Cumulé)',
+                        data: remainingCum,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.25
+                    });
+                }
+
+            } else {
+                const repMonthly = finalCalculationData.map(d => Math.round(d.repCut));
+                const agencyMonthly = finalCalculationData.map(d => Math.round(d.agencyCut));
+                const challengeMonthly = finalCalculationData.map(d => Math.round(d.challengeCut));
+                const remainingMonthly = finalCalculationData.map(d => Math.round(d.remainingCut));
+
+                datasets = [
+                    {
+                        label: repLabel,
+                        data: repMonthly,
+                        backgroundColor: '#7c3aed',
+                        borderRadius: 4
+                    },
+                    {
+                        label: agencyLabel,
+                        data: agencyMonthly,
+                        backgroundColor: '#ef4444',
+                        borderRadius: 4
+                    },
+                    {
+                        label: challengeLabel,
+                        data: challengeMonthly,
+                        backgroundColor: '#f59e0b',
+                        borderRadius: 4
+                    }
+                ];
+
+                if (!state.presentationMode) {
+                    datasets.unshift({
+                        label: remainingLabel,
+                        data: remainingMonthly,
+                        backgroundColor: '#10b981',
+                        borderRadius: 4
+                    });
+                }
             }
 
             chartInstance = new Chart(ctx, {
-                type: isCumulative ? 'line' : 'bar',
-                data: { labels: labels, datasets: datasets },
+                type: state.chartType === 'cumulative' ? 'line' : 'bar',
+                data: { labels, datasets },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: { mode: 'index', intersect: false },
                     plugins: {
-                        legend: { position: 'top', labels: { boxWidth: 10, font: { family: 'Inter', size: 11, weight: 500 } } },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 15,
+                                font: { family: 'Inter', size: 10, weight: '500' }
+                            }
+                        },
                         tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.95)',
-                            padding: 12,
-                            cornerRadius: 8,
                             callbacks: {
                                 label: function(context) {
                                     let label = context.dataset.label || '';
-                                    if (label) label += ': ';
-                                    if (context.parsed.y !== null) label += new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(context.parsed.y);
+                                    if (label) label += ' : ';
+                                    if (context.parsed.y !== null) {
+                                        label += new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(context.parsed.y);
+                                    }
                                     return label;
                                 }
                             }
                         }
                     },
                     scales: {
-                        x: { stacked: !isCumulative, grid: { display: false }, ticks: { font: { family: 'Inter', size: 10 } } },
-                        y: { stacked: !isCumulative, grid: { color: 'rgba(241, 245, 249, 1)' }, ticks: { font: { family: 'Inter', size: 10 }, callback: function(value) { return value.toLocaleString('fr-FR') + ' €'; } } }
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 9, family: 'Inter' } }
+                        },
+                        y: {
+                            stacked: state.chartType !== 'cumulative',
+                            ticks: {
+                                font: { size: 9, family: 'Inter' },
+                                callback: function(value) {
+                                    return value >= 1000 ? (value / 1000) + 'k €' : value + ' €';
+                                }
+                            },
+                            grid: { color: '#f1f5f9' }
+                        }
                     }
                 }
             });
         }
 
+        // Exporter les données au format CSV
         function exportToCSV() {
-            let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
-            csvContent += "Mois;Nouveaux Clients par Commercial;Quota commercial applique;Nombre de Commerciaux;Clients Actifs Cumules Equipe;CA Recurrent Mensuel (MRR) Equipe (€);Part Agence (€);Part Commercial (€);Budget Challenge (€);Plateforme RND Support (€)\r\n";
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            const revenueColHeader = "CA Encaisse (Cash)";
+            let headers = ["Mois", "Nouveaux Mensuels", "Nouveaux Annuels", "Total nouveaux clients equipe", "Portefeuille clients actifs", "Taux commission rep", revenueColHeader];
+            headers.push("Part Agence", "Part Commerciaux", "Budget Challenge");
+            if (!state.presentationMode) {
+                headers.push("Marge Plateforme");
+            }
+            csvContent += headers.join(";") + "\r\n";
 
-            let activeCustomers = 0;
-            const annualMonthlyEquivalent = state.annualPrice / 12;
-            const weightedUnitPrice = (state.monthlyPrice * (100 - state.pctAnnualMix) + annualMonthlyEquivalent * state.pctAnnualMix) / 100;
-
-            for (let m = 0; m < 36; m++) {
-                const newAcquisitionsPerRep = state.monthlyNewSales[m];
-                const teamNewAcquisitions = newAcquisitionsPerRep * state.repsCount;
+            finalCalculationData.forEach(d => {
+                let row = [
+                    d.month,
+                    d.newSalesMensuel,
+                    d.newSalesAnnuel,
+                    d.totalNewSalesTeam,
+                    d.activeClients,
+                    d.repCommRate + "%",
+                    Math.round(d.mrr)
+                ];
+                row.push(Math.round(d.agencyCut));
+                row.push(Math.round(d.repCut));
+                row.push(Math.round(d.challengeCut));
                 
-                let appliedRepRate = 35;
-                if (newAcquisitionsPerRep < 8) {
-                    appliedRepRate = 20;
-                } else if (newAcquisitionsPerRep < 16) {
-                    appliedRepRate = 30;
+                if (!state.presentationMode) {
+                    row.push(Math.round(d.remainingCut));
                 }
 
-                if (m > 0) activeCustomers = activeCustomers * (1 - state.churnRate / 100);
-                activeCustomers += teamNewAcquisitions;
-
-                const monthlyRevenue = activeCustomers * weightedUnitPrice;
-                const agency = (monthlyRevenue * state.pctAgency) / 100;
-                const rep = (monthlyRevenue * appliedRepRate) / 100;
-                const challenge = (monthlyRevenue * state.pctChallenge) / 100;
-                
-                const remainingPct = Math.max(0, 100 - (state.pctAgency + appliedRepRate + state.pctChallenge));
-                const remaining = (monthlyRevenue * remainingPct) / 100;
-
-                csvContent += `${m + 1};${newAcquisitionsPerRep};${appliedRepRate}%;${state.repsCount};${Math.round(activeCustomers)};${monthlyRevenue.toFixed(2)};${agency.toFixed(2)};${rep.toFixed(2)};${challenge.toFixed(2)};${remaining.toFixed(2)}\r\n`;
-            }
+                csvContent += row.join(";") + "\r\n";
+            });
 
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", `Simulation_Gains_Recurrents_OmniViZi.csv`);
+            link.setAttribute("download", `simulateur_cashflow_upfront_36mois.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
