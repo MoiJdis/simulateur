@@ -222,11 +222,11 @@
                 <div class="grid grid-cols-2 gap-3">
                     <div>
                         <label for="inputStartSalesMensuel" class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mensuels au Mois 1</label>
-                        <input type="number" id="inputStartSalesMensuel" value="12" min="0" oninput="generateSales()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                        <input type="number" id="inputStartSalesMensuel" value="14" min="0" oninput="generateSales()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
                     </div>
                     <div>
                         <label for="inputStartSalesAnnuel" class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Annuels au Mois 1</label>
-                        <input type="number" id="inputStartSalesAnnuel" value="4" min="0" oninput="generateSales()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
+                        <input type="number" id="inputStartSalesAnnuel" value="2" min="0" oninput="generateSales()" class="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all">
                     </div>
                 </div>
 
@@ -656,19 +656,19 @@
             state.pctAgency = 10;
             state.pctChallenge = 5;
             state.churnRateMensuel = 5.0;
-            state.churnRateAnnuel = 2.0;
+            state.churnRateAnnuel = 10.0;
             state.repsCount = 5;
             state.presentationMode = true;
             state.growthType = 'constant';
-            state.startSalesMensuel = 12;
-            state.startSalesAnnuel = 4;
+            state.startSalesMensuel = 14;
+            state.startSalesAnnuel = 2;
             state.growthFactor = 5;
 
             document.getElementById('inputMonthlyPrice').value = 99;
             document.getElementById('inputAnnualPrice').value = 990;
             document.getElementById('inputRepsCount').value = 5;
-            document.getElementById('inputStartSalesMensuel').value = 12;
-            document.getElementById('inputStartSalesAnnuel').value = 4;
+            document.getElementById('inputStartSalesMensuel').value = 14;
+            document.getElementById('inputStartSalesAnnuel').value = 2;
             document.getElementById('inputGrowthFactor').value = 5;
 
             setGrowthType('constant');
